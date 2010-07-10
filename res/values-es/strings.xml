@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- /*
+ * Copyright (C) 2010 Lluís Esquerda
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */ -->
+<resources>
+    <string name="app_name">CityBikes</string>
+    <string name="menu_sync">Sincronizar</string>
+    <string name="menu_location">Mi ubicación</string>
+    <string name="menu_view_all">Ver todas</string>
+    <string name="menu_settings">Preferencias</string>
+    <string name="menu_help">Ayuda</string>
+    <string name="no_bikes_around">No hay ninguna estación cerca. Prueba cambiando la distancia de la zona mostrada utilizando el control azul, o activando \"Ver todas\" en el menú de opciones</string>
+    <string name="bikes">bicis</string>
+    <string name="free">espacios</string>
+    <string name="network_error">Error de conexión</string>
+    <string name="loading">Descargando bicis :)</string>
+    <string name="preferences_location">Localización</string>
+    <string name="preferences_location_title">Método de localización</string>
+    <string name="preferences_location_summary">Activa o desactiva la localitzación por Red o GPS</string>
+    
+    
+    
+<string name="preferences_cache_network_summary">Deja la aplicación como si estubiese recién instalada (mantiene los favoritos)</string>
+    <string name="preferences_autofind_network_title">Selección automática de red</string>
+    <string name="preferences_autofind_network_summary">Permitir autodetectar la red dependiendo de tu localización</string>
+    <string name="preferences_cache_network_title">Limpiar caché</string>
+<string name="bike_network_alert_title">Selección de red de bicicletas</string>
+    <string name="preferences_network">Red de Bicicletas</string>
+    <string name="try_again">Otra vez</string>
+    <string name="bike_network_alert_success_title">Red encontrada</string>
+    <string name="bike_network_alert_error_title">No se han encontrado redes</string>
+    <string name="bike_network_alert_text">Puedo encontrar una red de bicicletas basandome en tu posición.\nO.. puedes escogerla manualmente de un listado de redes.\nQué quieres hacer?</string>
+    <string name="bike_network_alert_success_text1">Es correcto?</string>
+    <string name="bike_network_alert_success_text0">He detectado</string>
+    <string name="sure">Sí</string>
+    <string name="preferences_network_summary">Escoge manualmente de una lista de redes</string>
+    <string name="preferences_network_title">Selecciona una red de bicicletas</string>
+    <string name="automatic">Automàgico</string>
+    <string name="manual">Manual</string>
+    <string name="bike_network_alert_error_text">Vuelve a probarlo, o selecciona una red manualmente del listado</string>
+</resources>
