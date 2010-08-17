@@ -63,6 +63,11 @@ public class StationOverlay extends Overlay {
 	
 	private Station station;
 
+	public StationOverlay(Station station, boolean mode){
+		this.station = station;
+		this.initPaint();
+		this.updateStatus(mode);
+	}
 	
 	public StationOverlay(Station station){
 		this.station = station;
@@ -111,6 +116,30 @@ public class StationOverlay extends Overlay {
 	public GeoPoint getCenter() {
 		return this.station.getCenter();
 	}
+	
+	public void updateStatus (boolean onGetMode){
+		if (onGetMode){
+			updateStatus();
+		}else{
+			if (station.getFree() > YELLOW_STATE_MAX) {
+				this.status = GREEN_STATE;
+				this.radiusInMeters = GREEN_STATE_RADIUS;
+				this.currentPaint.setARGB(75, 168, 255, 87);
+				this.currentBorderPaint.setARGB(100, 168, 255, 87);
+			} else if (station.getFree() > RED_STATE_MAX) {
+				this.status = YELLOW_STATE;
+				this.radiusInMeters = YELLOW_STATE_RADIUS;
+				this.currentPaint.setARGB(75, 255, 210, 72);
+				this.currentBorderPaint.setARGB(100, 255, 210, 72);
+
+			} else {
+				this.status = RED_STATE;
+				this.radiusInMeters = RED_STATE_RADIUS;
+				this.currentPaint.setARGB(75, 240, 35, 17);
+				this.currentBorderPaint.setARGB(100, 240, 35, 17);
+			}
+		}
+	}
 
 	public void updateStatus(){
 		if (station.getBikes() > YELLOW_STATE_MAX) {
@@ -132,12 +161,22 @@ public class StationOverlay extends Overlay {
 		}
 	}
 
+	
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+		updateStatus();
 		if (this.selected) {
 			this.radiusInMeters = SELECTED_STATE_RADIUS;
-		} else
-			updateStatus();
+		}
+			
+	}
+	
+	public void setSelected(boolean selected, boolean mode) {
+		this.selected = selected;
+		updateStatus(mode);
+		if (this.selected) {
+			this.radiusInMeters = SELECTED_STATE_RADIUS;
+		}
 	}
 
 	public void update() {
@@ -194,6 +233,7 @@ public class StationOverlay extends Overlay {
 				Message msg = new Message();
 				msg.what = TOUCHED;
 				msg.arg1 = this.position;
+				msg.obj = this.station;
 				this.handler.sendMessage(msg);
 			}
 		}

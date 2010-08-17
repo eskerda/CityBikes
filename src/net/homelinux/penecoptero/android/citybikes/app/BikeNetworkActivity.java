@@ -46,7 +46,6 @@ public class BikeNetworkActivity extends ListActivity {
 		try{
 			json_networks = nDBAdapter.update();
 		}catch(Exception e){
-			//Log.i("CityBikes",e.getLocalizedMessage());
 			try{
 				nDBAdapter.load();
 				json_networks = nDBAdapter.getStored();

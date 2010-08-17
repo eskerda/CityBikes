@@ -56,4 +56,10 @@
 			</net.homelinux.penecoptero.android.citybikes.app.InfoLayer>
 		</LinearLayout>
 	</LinearLayout>
+	<ToggleButton android:id="@+id/mode_button"
+		android:layout_margin="5px" android:layout_width="48dip" android:layout_height="48dip"
+		android:layout_gravity="right|top"
+		android:background="@drawable/kitchen_toggle" android:textOn="" android:textOff=""
+		>
+	</ToggleButton>
 </FrameLayout>

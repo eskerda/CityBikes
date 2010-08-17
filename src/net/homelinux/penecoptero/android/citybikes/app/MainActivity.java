@@ -32,11 +32,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -49,6 +49,7 @@ import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -76,6 +77,7 @@ public class MainActivity extends MapActivity {
 	private ProgressDialog progressDialog;
 	private FrameLayout fl;
 	private SlidingDrawer mSlidingDrawer;
+	private ToggleButton modeButton;
 	
 	private SharedPreferences settings;
 	private NetworksDBAdapter mNDBAdapter;
@@ -83,6 +85,8 @@ public class MainActivity extends MapActivity {
 	private Handler infoLayerPopulator;
 
 	private int green, red, yellow;
+	
+	private boolean getBike = true;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -108,12 +112,27 @@ public class MainActivity extends MapActivity {
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		zoomControlsLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		zoomControlsLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-
+		
+		
 		mapView.addView(mapView.getZoomControls(), zoomControlsLayoutParams);
+		
+		modeButton = (ToggleButton) findViewById(R.id.mode_button);
+		
+		
+		modeButton.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				changeMode(!getBike);
+			}
+			
+		});
+		
 		settings = getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
 		
 		List<Overlay> mapOverlays = mapView.getOverlays();
-
+		
+		
 		stations = new StationOverlayList(this, mapOverlays, new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
@@ -126,7 +145,7 @@ public class MainActivity extends MapActivity {
 					}
 				} else if (msg.what == StationOverlay.TOUCHED && msg.arg1 != -1) {
 					// One station has been touched
-					stations.setCurrent(msg.arg1);
+					stations.setCurrent(msg.arg1, getBike);
 					infoLayer.inflateStation(stations.getCurrent());
 				} else if (msg.what == hOverlay.LOCATION_CHANGED) {
 					// Location has changed
@@ -172,7 +191,7 @@ public class MainActivity extends MapActivity {
 								.inflateMessage(getString(R.string.no_bikes_around));
 					}
 					if (current != null) {
-						current.setSelected(true);
+						current.setSelected(true, getBike);
 						infoLayer.inflateStation(current);
 						if (view_all)
 							view_all();
@@ -395,6 +414,14 @@ public class MainActivity extends MapActivity {
 			}
 		}
 	}
+	
+	public void changeMode(boolean getBike){
+		this.getBike = getBike;
+		mDbHelper.changeMode(this.getBike);
+		this.populateList(this.view_all);
+		infoLayer.update();
+		mapView.invalidate();
+	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -402,6 +429,9 @@ public class MainActivity extends MapActivity {
 		return false;
 	}
 
+	public boolean isOnGetMode(){
+		return this.getBike;
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -445,7 +475,7 @@ public class MainActivity extends MapActivity {
 				StationOverlay current = stations.getCurrent();
 				if (current != null) {
 					infoLayer.inflateStation(current);
-					current.setSelected(true);
+					current.setSelected(true, this.getBike);
 				} else {
 					infoLayer
 							.inflateMessage(getString(R.string.no_bikes_around));
@@ -615,7 +645,7 @@ public class MainActivity extends MapActivity {
 					if (pos != -1) {
 						StationOverlay selected = stations.findById(pos);
 						if (selected != null) {
-							stations.setCurrent(selected.getPosition());
+							stations.setCurrent(selected.getPosition(), getBike);
 							Message tmp = new Message();
 							tmp.what = InfoLayer.POPULATE;
 							tmp.arg1 = selected.getPosition();

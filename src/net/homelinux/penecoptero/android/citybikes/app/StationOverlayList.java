@@ -68,16 +68,16 @@ public class StationOverlayList {
 		}
 	}
 
-	public void setCurrent(int position) {
+	public void setCurrent(int position, boolean mode) {
 		StationOverlay sht;
 		if (this.last != null && this.last instanceof StationOverlay)
-			this.last.setSelected(false);
+			this.last.setSelected(false, mode);
 		this.current = position;
 		sht = get(position);
 		if (sht != null) {
 			this.last = sht;
 			if (!this.last.getSelected())
-				this.last.setSelected(true);
+				this.last.setSelected(true, mode);
 		}
 	}
 

@@ -291,6 +291,17 @@ public class StationsDBAdapter implements Runnable {
 		mapView.postInvalidate();
 	}
 
+	public void changeMode (boolean getBike){
+		Iterator i = stationsMemoryMap.iterator();
+		while (i.hasNext()){
+			Object tmp = i.next();
+			if ( tmp instanceof StationOverlay){
+				StationOverlay st = (StationOverlay) tmp;
+				st.updateStatus(getBike);
+			}
+		}
+	}
+	
 	@Override
 	public void run() {
 		while (!toDo.isEmpty()) {
