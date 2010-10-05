@@ -675,11 +675,12 @@ public class MainActivity extends MapActivity {
 			DisplayMetrics dm = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(dm);
 			int height = dm.heightPixels;
-			int calc = (lv.getCount() * 50) + 45;
-			if (calc > height - 145)
-				calc = height - 145;
-			else if (lv.getCount() == 0)
-				calc = 0;
+				int calc = (lv.getCount() * 50) + 45;
+				if (calc > height - 145)
+					calc = height - 145;
+				else if (lv.getCount() == 0)
+					calc = 0;
+			
 			mSlidingDrawer.setLayoutParams(new LayoutParams(
 					android.view.ViewGroup.LayoutParams.FILL_PARENT, calc));
 			////Log.i("openBicing", Integer.toString(fl.getHeight()));
