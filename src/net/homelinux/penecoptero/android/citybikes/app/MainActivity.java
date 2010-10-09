@@ -18,6 +18,8 @@ package net.homelinux.penecoptero.android.citybikes.app;
 
 import java.util.List;
 
+import net.homelinux.penecoptero.android.citybikes.utils.CircleHelper;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -87,6 +89,8 @@ public class MainActivity extends MapActivity {
 	private int green, red, yellow;
 	
 	private boolean getBike = true;
+	
+	private float scale;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,8 @@ public class MainActivity extends MapActivity {
 		fl = (FrameLayout) findViewById(R.id.content);
 		mSlidingDrawer = (SlidingDrawer) findViewById(R.id.drawer);
 		infoLayer = (InfoLayer) findViewById(R.id.info_layer);
+		
+		scale = getResources().getDisplayMetrics().density;
 		//Log.i("CityBikes","ON CREATEEEEEEEEE!!!!!");
 		infoLayerPopulator = new Handler() {
 			@Override
@@ -108,7 +114,7 @@ public class MainActivity extends MapActivity {
 		};
 
 		RelativeLayout.LayoutParams zoomControlsLayoutParams = new RelativeLayout.LayoutParams(
-				android.view.ViewGroup.LayoutParams.FILL_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		zoomControlsLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		zoomControlsLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
@@ -675,9 +681,9 @@ public class MainActivity extends MapActivity {
 			DisplayMetrics dm = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(dm);
 			int height = dm.heightPixels;
-				int calc = (lv.getCount() * 50) + 45;
-				if (calc > height - 145)
-					calc = height - 145;
+				int calc = (lv.getCount() * CircleHelper.dip2px(50, scale) + CircleHelper.dip2px(45, scale));
+				if (calc > height - CircleHelper.dip2px(145, scale))
+					calc = height - CircleHelper.dip2px(145, scale);
 				else if (lv.getCount() == 0)
 					calc = 0;
 			

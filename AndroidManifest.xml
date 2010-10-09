@@ -19,8 +19,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.homelinux.penecoptero.android.citybikes.app"
-      android:versionCode="2"
-      android:versionName="1.1">
+      android:versionCode="4"
+      android:versionName="1.2 Compatibility">
     <application android:icon="@drawable/icon_cool" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
     	<uses-library android:name="com.google.android.maps" />
 			<activity android:name=".MainActivity" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
