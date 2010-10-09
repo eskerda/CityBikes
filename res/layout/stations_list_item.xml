@@ -23,24 +23,23 @@
 						xmlns:android="http://schemas.android.com/apk/res/android"
 						android:orientation="horizontal" 
 						android:gravity="center"
-						android:layout_width="5px" android:layout_height="fill_parent">
+						android:layout_width="5dip" android:layout_height="fill_parent">
 				</LinearLayout>
 <LinearLayout android:id="@+id/station_list_item_main_layout"
 				xmlns:android="http://schemas.android.com/apk/res/android"
 				android:orientation="horizontal" 
-				android:layout_width="fill_parent" android:layout_height="50px"
-				android:paddingTop="5px" android:paddingLeft="5px"
-				android:paddingBottom="5px"
-				android:paddingRight="5px"
+				android:layout_width="fill_parent" android:layout_height="50dip"
+				android:paddingTop="2dip" android:paddingLeft="2dip"
+				android:paddingBottom="2dip"
+				android:paddingRight="2dip"
 				>
 				
 				
 				
 				<TextView android:text="150m" android:id="@+id/station_list_item_distance"
 								android:layout_width="wrap_content" android:layout_height="fill_parent"
-								android:layout_marginRight="5px" android:textAppearance="?android:attr/textAppearanceSmall"
-								android:gravity="center"
-								 />
+								android:layout_marginRight="5dip" android:gravity="center"
+								 android:textSize="14dip"/>
 				
 				<LinearLayout android:id="@+id/LinearLayout02"
 					android:layout_width="wrap_content" android:gravity="center" android:layout_height="wrap_content"
@@ -49,7 +48,7 @@
 					<TextView android:text="356 - Balcells" android:id="@+id/station_list_item_id"
 						android:layout_height="wrap_content" android:lines="1" android:layout_width="fill_parent"
 						
-						android:gravity="center" android:textAppearance="?android:attr/textAppearanceSmall" />
+						android:gravity="center" android:textSize="14dip"/>
 
 					<LinearLayout android:id="@+id/LinearLayout03"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -58,14 +57,12 @@
 							android:layout_height="wrap_content" android:layout_width="fill_parent">
 							<TextView android:text="0 Bikes / 27 Spaces" android:id="@+id/station_list_item_ocupation"
 								android:gravity="center" android:layout_width="fill_parent"
-								android:textAppearance="?android:attr/textAppearanceMedium"
-								android:layout_height="fill_parent"/>
+								android:layout_height="fill_parent" android:textSize="18dip" android:textColor="#FFFFFF"/>
 						</LinearLayout>
 					</LinearLayout>
 				</LinearLayout>
 				<TextView android:text="1 min" android:id="@+id/station_list_item_walking_time" android:gravity="center"
 								android:layout_width="wrap_content" android:layout_height="fill_parent" 
-								android:textAppearance="?android:attr/textAppearanceSmall"
-								/>
+								android:textSize="14dip"/>
 			</LinearLayout>
 </LinearLayout>

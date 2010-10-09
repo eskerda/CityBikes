@@ -16,6 +16,8 @@
 
 package net.homelinux.penecoptero.android.citybikes.utils;
 
+import android.util.Log;
+
 import com.google.android.maps.GeoPoint;
 
 public class CircleHelper {
@@ -50,5 +52,9 @@ public class CircleHelper {
 				* Math.sin(dLon / 2);
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		return 6378140 * c;
+	}
+	
+	public static final int dip2px(float dips, float scale){
+		return (int) (dips * scale + 0.5f);
 	}
 }

@@ -36,8 +36,8 @@
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:orientation="horizontal" android:gravity="center"
 				android:id="@id/handle" android:background="@drawable/shadow">
-				<ImageView android:layout_width="40px"
-					android:layout_height="40px" android:src="@drawable/handle"
+				<ImageView android:layout_width="40dip"
+					android:layout_height="40dip" android:src="@drawable/handle"
 					android:layout_weight="2" />
 			</LinearLayout>
 			<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -50,9 +50,9 @@
 			android:layout_margin="0px">
 			<net.homelinux.penecoptero.android.citybikes.app.InfoLayer android:id="@+id/info_layer"
 				android:layout_margin="0px" android:layout_width="fill_parent"
-				android:layout_height="wrap_content" android:paddingTop="5px"
-				android:paddingLeft="5px" android:paddingBottom="5px"
-				android:background="@drawable/fancy_gradient" android:paddingRight="5px">
+				android:layout_height="wrap_content" android:paddingTop="5dip"
+				android:paddingLeft="5dip" android:paddingBottom="5dip"
+				android:background="@drawable/fancy_gradient" android:paddingRight="5dip">
 			</net.homelinux.penecoptero.android.citybikes.app.InfoLayer>
 		</LinearLayout>
 	</LinearLayout>

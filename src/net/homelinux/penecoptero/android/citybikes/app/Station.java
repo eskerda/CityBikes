@@ -100,4 +100,8 @@ public class Station {
 	public String getDistance() {
 		return this.distanceText;
 	}
+	
+	public Context getContext(){
+		return this.context;
+	}
 }

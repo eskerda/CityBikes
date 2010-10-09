@@ -16,12 +16,14 @@
 
 package net.homelinux.penecoptero.android.citybikes.app;
 
+import net.homelinux.penecoptero.android.citybikes.utils.CircleHelper;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.google.android.maps.GeoPoint;
@@ -52,10 +54,14 @@ public class StationOverlay extends Overlay {
 	private static final int YELLOW_STATE_RADIUS = 80;
 	private static final int GREEN_STATE_RADIUS = 80;
 	private static final int SELECTED_STATE_RADIUS = 120;
+	
+	private static final int STROKE_WIDTH = 4;
 
 	private Paint currentPaint;
 	private Paint currentBorderPaint;
 	private Paint selectedPaint;
+	
+	private float scale;
 
 	
 
@@ -65,16 +71,17 @@ public class StationOverlay extends Overlay {
 
 	public StationOverlay(Station station, boolean mode){
 		this.station = station;
+		scale = station.getContext().getResources().getDisplayMetrics().density;
 		this.initPaint();
 		this.updateStatus(mode);
 	}
 	
 	public StationOverlay(Station station){
 		this.station = station;
+		scale = station.getContext().getResources().getDisplayMetrics().density;
 		this.initPaint();
 		this.updateStatus();
 	}
-	
 	
 	private void initPaint(){
 		this.currentPaint = new Paint();
@@ -84,12 +91,12 @@ public class StationOverlay extends Overlay {
 		this.currentPaint.setAntiAlias(true);
 
 		this.currentBorderPaint.setStyle(Paint.Style.STROKE);
-		this.currentBorderPaint.setStrokeWidth(4);
+		this.currentBorderPaint.setStrokeWidth(CircleHelper.dip2px(STROKE_WIDTH, scale));
 
 		this.selectedPaint = new Paint();
 		this.selectedPaint.setARGB(75, 0, 0, 0);
 		this.selectedPaint.setAntiAlias(true);
-		this.selectedPaint.setStrokeWidth(4);
+		this.selectedPaint.setStrokeWidth(CircleHelper.dip2px(STROKE_WIDTH, scale));
 		this.selectedPaint.setStyle(Paint.Style.STROKE);
 	}
 
