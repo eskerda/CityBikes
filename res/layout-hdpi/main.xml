@@ -21,7 +21,7 @@
 		xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/mapview"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:padding="0px" android:clickable="true"
-		android:apiKey="0M6iRHXUjmWCRx5NQg_5tZH7ZtZkI1kaO-ZQZtA">
+		android:apiKey="0M6iRHXUjmWBHgd0HYv7WNqm70Wq1XPVLhH275A">
 	</com.google.android.maps.MapView>
 	<!-- release android:apiKey="0M6iRHXUjmWCRx5NQg_5tZH7ZtZkI1kaO-ZQZtA ">  -->
 	<!-- testing android:apiKey="0M6iRHXUjmWBHgd0HYv7WNqm70Wq1XPVLhH275A ">  -->

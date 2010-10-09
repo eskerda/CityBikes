@@ -63,6 +63,14 @@ public class HomeOverlay extends Overlay {
 	private Handler handler;
 
 	private List<LocationListener> listeners;
+	
+	private Paint borderPaint, fillPaint, txtPaint, arrowPaint;
+	
+	private static final int STROKE_WIDTH = 2;
+	private static final int HANDLE_RADIUS = 8;
+	private static final int CENTER_RADIUS = 5;
+	
+	private float scale;
 
 	public HomeOverlay(Context context, Handler handler) {
 		////Log.i("openBicing", "AWESOME");
@@ -107,6 +115,8 @@ public class HomeOverlay extends Overlay {
 					ll);
 		}
 		setLastKnownLocation();
+		scale = context.getResources().getDisplayMetrics().density;
+		setPaints();
 	}
 
 	public void stopUpdates() {
@@ -116,6 +126,32 @@ public class HomeOverlay extends Overlay {
 		while (ll.hasNext()) {
 			locationManager.removeUpdates(ll.next());
 		}
+	}
+	
+	private void setPaints(){
+		borderPaint = new Paint();
+		
+		borderPaint.setARGB(100, 147, 186, 228);
+		borderPaint.setStrokeWidth(CircleHelper.dip2px(STROKE_WIDTH, scale));
+		borderPaint.setAntiAlias(true);
+		borderPaint.setStyle(Paint.Style.STROKE);
+		
+		
+		fillPaint = new Paint(borderPaint);
+		fillPaint.setStyle(Paint.Style.FILL);
+		fillPaint.setAlpha(20);
+		
+		txtPaint = new Paint();
+		txtPaint.setARGB(255, 255, 255, 255);
+		txtPaint.setAntiAlias(true);
+		txtPaint.setTextAlign(Paint.Align.CENTER);
+		
+		arrowPaint = new Paint();
+		arrowPaint.setARGB(255, 147, 186, 228);
+		arrowPaint.setStrokeWidth(CircleHelper.dip2px(STROKE_WIDTH, scale));
+		arrowPaint.setAntiAlias(true);
+		arrowPaint.setStrokeCap(Cap.ROUND);
+		arrowPaint.setStyle(Paint.Style.FILL);
 	}
 
 	public void restartUpdates() {
@@ -211,23 +247,12 @@ public class HomeOverlay extends Overlay {
 			this.centerXInPixels = screenPixels.x;
 			this.centerYInPixels = screenPixels.y;
 
-			Paint paint = new Paint();
-
-			paint.setARGB(100, 147, 186, 228);
-			paint.setStrokeWidth(2);
-			paint.setAntiAlias(true);
-			paint.setStyle(Paint.Style.STROKE);
 			canvas.drawCircle(screenPixels.x, screenPixels.y,
-					this.radiusInPixels, paint);
+					this.radiusInPixels, borderPaint);
 
-			paint.setStyle(Paint.Style.FILL);
-			paint.setAlpha(20);
 			canvas.drawCircle(screenPixels.x, screenPixels.y,
-					this.radiusInPixels, paint);
+					this.radiusInPixels, fillPaint);
 
-			Paint txtPaint = new Paint();
-			txtPaint.setARGB(255, 255, 255, 255);
-			txtPaint.setAntiAlias(true);
 			txtPaint.setTextSize(this.radiusInPixels / 4);
 			String text;
 			if (this.radiusInMeters > 1000) {
@@ -245,7 +270,6 @@ public class HomeOverlay extends Overlay {
 					* Math.sin(Math.PI));
 
 			// lol
-			txtPaint.setTextAlign(Paint.Align.CENTER);
 			Path tPath = new Path();
 			tPath.moveTo(x, y + this.radiusInPixels / 3);
 			tPath.lineTo(x + this.radiusInPixels * 2, y + this.radiusInPixels
@@ -261,24 +285,19 @@ public class HomeOverlay extends Overlay {
 	}
 
 	public void drawArrow(Canvas canvas, Point sPC, float length, double angle) {
-		Paint paint = new Paint();
-		paint.setARGB(255, 147, 186, 228);
-		paint.setStrokeWidth(2);
-		paint.setAntiAlias(true);
-		paint.setStrokeCap(Cap.ROUND);
-		paint.setStyle(Paint.Style.FILL);
+
 		float x = (float) (sPC.x + length * Math.cos(angle));
 		float y = (float) (sPC.y + length * Math.sin(angle));
-		canvas.drawLine(sPC.x, sPC.y, x, y, paint);
+		canvas.drawLine(sPC.x, sPC.y, x, y, arrowPaint);
 
-		// canvas.drawCircle(x, y, 10, paint);
 
-		canvas.drawCircle(sPC.x, sPC.y, 5, paint);
+
+		canvas.drawCircle(sPC.x, sPC.y, CircleHelper.dip2px(CENTER_RADIUS, scale), arrowPaint);
 
 		smallCircleX = x;
 		smallCircleY = y;
 
-		canvas.drawCircle(x, y, 8, paint);
+		canvas.drawCircle(x, y, CircleHelper.dip2px(HANDLE_RADIUS, scale), arrowPaint);
 
 	}
 
@@ -298,7 +317,7 @@ public class HomeOverlay extends Overlay {
 		int action = e.getAction();
 
 		boolean onCircle = CircleHelper.isOnCircle(x, y, this.smallCircleX,
-				this.smallCircleY, this.smallCircleRadius + 20);
+				this.smallCircleY, this.smallCircleRadius + CircleHelper.dip2px(20, scale));
 
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
