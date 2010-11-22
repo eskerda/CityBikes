@@ -23,7 +23,6 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.google.android.maps.GeoPoint;
