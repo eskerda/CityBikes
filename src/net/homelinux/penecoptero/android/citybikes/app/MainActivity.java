@@ -381,7 +381,6 @@ public class MainActivity extends MapActivity {
 			try{
 				mNDBAdapter.update();
 				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-				alertDialog.setIcon(R.drawable.icon_cool);
 				alertDialog.setIcon(android.R.drawable.ic_dialog_map);
 				alertDialog.setTitle(R.string.bike_network_alert_title);
 				alertDialog.setMessage(getString(R.string.bike_network_alert_text));
