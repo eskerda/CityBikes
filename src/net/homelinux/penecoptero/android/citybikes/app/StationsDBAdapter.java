@@ -73,6 +73,8 @@ public class StationsDBAdapter implements Runnable {
 	private String RAWstations;
 
 	private String last_updated;
+	
+	private long last_updated_time;
 
 	private GeoPoint center;
 
@@ -101,6 +103,10 @@ public class StationsDBAdapter implements Runnable {
 
 	public String getLastUpdated() {
 		return last_updated;
+	}
+	
+	public Long getLastUpdatedTime(){
+		return last_updated_time;
 	}
 
 	public void setCenter(GeoPoint point) {
@@ -244,6 +250,7 @@ public class StationsDBAdapter implements Runnable {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString("stations", this.RAWstations);
 		editor.putString("last_updated", this.last_updated);
+		editor.putLong("last_updated_time",this.last_updated_time);
 		editor.commit();
 	}
 
@@ -252,6 +259,7 @@ public class StationsDBAdapter implements Runnable {
 				0);
 		RAWstations = settings.getString("stations", "[]");
 		last_updated = settings.getString("last_updated", null);
+		last_updated_time = settings.getLong("last_updated_time", 0);
 	}
 
 	public void sync(boolean all, Bundle data) throws Exception {
@@ -267,17 +275,16 @@ public class StationsDBAdapter implements Runnable {
 	}
 
 	public void populateStations() throws Exception {
-		stationsDisplayList.clear();
+		stationsDisplayList.clearStationOverlays();
 		Iterator<StationOverlay> i = stationsMemoryMap.iterator();
 		while (i.hasNext()) {
 			stationsDisplayList.addStationOverlay(i.next());
 		}
-		stationsDisplayList.updatePositions();
 		mapView.postInvalidate();
 	}
 
 	public void populateStations(GeoPoint center, int radius) throws Exception {
-		stationsDisplayList.clear();
+		stationsDisplayList.clearStationOverlays();
 		Iterator<StationOverlay> i = stationsMemoryMap.iterator();
 		this.reorder();
 		StationOverlay tmp;
@@ -287,7 +294,6 @@ public class StationsDBAdapter implements Runnable {
 				stationsDisplayList.addStationOverlay(tmp);
 			}
 		}
-		stationsDisplayList.updatePositions();
 		mapView.postInvalidate();
 	}
 
@@ -317,6 +323,7 @@ public class StationsDBAdapter implements Runnable {
 							TIMESTAMP_FORMAT);
 					Calendar cal = Calendar.getInstance();
 					last_updated = sdf.format(cal.getTime());
+					last_updated_time = cal.getTime().getTime();
 					buildMemory(new JSONArray(RAWstations), this.center);
 				} catch (Exception fetchError) {
 					handlerOut.sendEmptyMessage(NETWORK_ERROR);

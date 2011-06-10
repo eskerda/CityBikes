@@ -17,9 +17,9 @@
 package net.homelinux.penecoptero.android.citybikes.app;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
-import android.content.Context;
 import android.os.Handler;
 
 import com.google.android.maps.Overlay;
@@ -27,181 +27,77 @@ import com.google.android.maps.Overlay;
 public class StationOverlayList {
 
 	private List<Overlay> mapOverlays;
-	private Context context;
-	private HomeOverlay hOverlay;
+	private List<Overlay> shitOverlays;
 	private Handler handler;
-	private int current = -1;
-	private int first;
-	private StationOverlay last = null;
+	
+	private StationOverlay current;
 
-	public StationOverlayList(Context context, List<Overlay> mapOverlays,
-			Handler handler) {
-		this.context = context;
+	public StationOverlayList(List<Overlay> mapOverlays, Handler handler) {
+		shitOverlays = new LinkedList <Overlay> ();
 		this.mapOverlays = mapOverlays;
 		this.handler = handler;
-		hOverlay = new HomeOverlay(this.context, handler);
-		hOverlay.setLastKnownLocation();
-		addHome();
 	}
 
 	public List<Overlay> getList() {
 		return mapOverlays;
 	}
 
-	public void addStationOverlay(Overlay overlay) {
-		if (overlay instanceof StationOverlay) {
-			StationOverlay sht = (StationOverlay) overlay;
-			sht.setHandler(handler);
-		}
-		this.mapOverlays.add(overlay);
-		if (this.current == -1) {
-			this.current = 0;
-			this.first = 0;
-		}
+	public void addOverlay(Overlay overlay){
+		/**
+		 * Add any Overlay, it will be ignored in the "inner" working.
+		 * A reference is also added in shitOverlays.
+		 */
+		mapOverlays.add(overlay);
+		shitOverlays.add(overlay);
 	}
 
-	public StationOverlay get(int position) {
-		if (mapOverlays.get(position) instanceof StationOverlay) {
-			return (StationOverlay) mapOverlays.get(position);
-		} else {
-			return null;
-		}
-	}
-
-	public void setCurrent(int position, boolean mode) {
-		StationOverlay sht;
-		if (this.last != null && this.last instanceof StationOverlay)
-			this.last.setSelected(false, mode);
-		this.current = position;
-		sht = get(position);
-		if (sht != null) {
-			this.last = sht;
-			if (!this.last.getSelected())
-				this.last.setSelected(true, mode);
+	public void addStationOverlay(StationOverlay overlay) {
+		/****
+		 * Add a StationOverlay, set with the predefined Station Handler
+		 */
+		overlay.setHandler(handler);
+		mapOverlays.add(overlay);
+		if (current == null){
+			current = overlay;
 		}
 	}
 
-	public void updatePositions() {
-		int i = 0;
-		StationOverlay tmp;
-		while (i < mapOverlays.size()) {
-			if (mapOverlays.get(i) instanceof StationOverlay) {
-				tmp = (StationOverlay) mapOverlays.get(i);
-				tmp.setPosition(i);
-			}
-			i++;
-		}
-
+	public void setOverlayList(List<Overlay> list){
+		mapOverlays = list;
 	}
 
-	public void addHome() {
-		mapOverlays.add(hOverlay);
-	}
 
-	public void addStationOverlay(int location, Overlay overlay) {
-		this.mapOverlays.add(location, overlay);
-	}
-
-	public void setStationOverlay(int location, Overlay overlay) {
-		this.mapOverlays.set(location, overlay);
-	}
-
-	public void updateStationOverlay(int location) {
-		StationOverlay station = (StationOverlay) this.mapOverlays
-				.get(location);
-		station.update();
-	}
-
-	public void updateHome() {
-		hOverlay.setLastKnownLocation();
-	}
-
-	public void clear() {
+	public void clearStationOverlays() {
 		mapOverlays.clear();
-		current = -1;
-		addHome();
+		for (Iterator <Overlay> io = shitOverlays.iterator(); io.hasNext();){
+			mapOverlays.add(io.next());
+		}
 	}
-
-	public HomeOverlay getHome() {
-		return hOverlay;
-	}
-
-	public StationOverlay getCurrent() {
-		if (current != -1) {
-			if (mapOverlays.size() > 1) {
-				if (!(mapOverlays.get(current) instanceof StationOverlay))
-					current++;
-				this.last = (StationOverlay) mapOverlays.get(current);
-				return (StationOverlay) mapOverlays.get(current);
-			} else {
-				return null;
-			}
-		} else
-			return null;
-	}
-
-	public StationOverlay findById(int id) {
+	
+	public StationOverlay getById (int id){
 		Iterator i = mapOverlays.iterator();
 		StationOverlay tmp;
 		Object aws;
 		while (i.hasNext()) {
-			aws = i.next();
-			if (aws instanceof StationOverlay) {
-				tmp = (StationOverlay) aws;
-				if (tmp.getStation().getId() == id)
-					return tmp;
-			}
+		aws = i.next();
+		if (aws instanceof StationOverlay) {
+		tmp = (StationOverlay) aws;
+		if (tmp.getStation().getId() == id)
+		return tmp;
+		}
 		}
 		return null;
 	}
-
-	public StationOverlay selectNext() {
-		if (last != null)
-			last.setSelected(false);
-		else {
-			StationOverlay sht = (StationOverlay) mapOverlays.get(current);
-			sht.setSelected(false);
-		}
-		do {
-			current++;
-			if (current > mapOverlays.size() - 1)
-				current = first;
-		} while (!(mapOverlays.get(current) instanceof StationOverlay)
-				&& mapOverlays.size() > 1);
-
-		if (mapOverlays.get(current) instanceof StationOverlay) {
-			StationOverlay res = (StationOverlay) mapOverlays.get(current);
-			res.setSelected(true);
-			last = res;
-			return res;
-		} else
-			return null;
-
+	
+	public void setCurrent(int position, boolean mode) {
+		if (current!=null)
+			current.setSelected(false, mode);
+		current = getById(position);
+		if (current != null)
+			current.setSelected(true, mode);
 	}
-
-	public StationOverlay selectPrevious() {
-		if (last != null)
-			last.setSelected(false);
-		else {
-			StationOverlay sht = (StationOverlay) mapOverlays.get(current);
-			sht.setSelected(false);
-		}
-
-		do {
-			current--;
-			if (current < 0) {
-				current = mapOverlays.size() - 1;
-			}
-		} while (!(mapOverlays.get(current) instanceof StationOverlay)
-				&& mapOverlays.size() > 1);
-
-		if (mapOverlays.get(current) instanceof StationOverlay) {
-			StationOverlay res = (StationOverlay) mapOverlays.get(current);
-			res.setSelected(true);
-			last = res;
-			return res;
-		} else {
-			return null;
-		}
+	
+	public StationOverlay getCurrent(){
+		return current;
 	}
 }

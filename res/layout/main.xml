@@ -25,6 +25,7 @@
 	</com.google.android.maps.MapView>
 	<!-- release android:apiKey="0M6iRHXUjmWCRx5NQg_5tZH7ZtZkI1kaO-ZQZtA ">  -->
 	<!-- testing android:apiKey="0M6iRHXUjmWBHgd0HYv7WNqm70Wq1XPVLhH275A ">  -->
+	<!-- testing lap 01Cfcklw7VI9P-sPCeVRN2_ifrxYyNIQ3crrMqw -->
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:orientation="vertical" android:gravity="bottom">

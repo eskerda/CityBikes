@@ -16,21 +16,12 @@
 
 package net.homelinux.penecoptero.android.citybikes.app;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import net.homelinux.penecoptero.android.citybikes.utils.CircleHelper;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 
@@ -41,9 +32,7 @@ import com.google.android.maps.Projection;
 
 public class HomeOverlay extends Overlay {
 
-	public final int MOTION_CIRCLE_STOP = 100;
-	public final int LOCATION_CHANGED = 101;
-	private Context context;
+	public static final int MOTION_CIRCLE_STOP = 100;
 	private GeoPoint point;
 
 	private float radiusInPixels;
@@ -62,167 +51,16 @@ public class HomeOverlay extends Overlay {
 
 	private Handler handler;
 
-	private List<LocationListener> listeners;
-	
-	private Paint borderPaint, fillPaint, txtPaint, arrowPaint;
-	
-	private static final int STROKE_WIDTH = 2;
-	private static final int HANDLE_RADIUS = 8;
-	private static final int CENTER_RADIUS = 5;
-	
-	private float scale;
-
-	public HomeOverlay(Context context, Handler handler) {
-		////Log.i("openBicing", "AWESOME");
-		this.context = context;
+	public HomeOverlay(GeoPoint center, Handler handler) {
+		point = center;
 		this.handler = handler;
-		LocationManager locationManager = (LocationManager) this.context
-				.getSystemService(Context.LOCATION_SERVICE);
-		List<String> providers = locationManager.getProviders(true);
-		listeners = new LinkedList<LocationListener>();
-		for (int i = 0; i < providers.size(); i++) {
-			LocationListener ll = new LocationListener() {
-				@Override
-				public void onLocationChanged(Location location) {
-					// TODO Auto-generated method stub
-					update(location);
-					//////Log.i("openBicing", "Location has changed");
-				}
-
-				@Override
-				public void onProviderDisabled(String provider) {
-					// TODO Auto-generated method stub
-					//////Log.i("openBicing", provider + " is disabled");
-
-				}
-
-				@Override
-				public void onProviderEnabled(String provider) {
-					// TODO Auto-generated method stub
-					//////Log.i("openBicing", provider + " is enabled");
-				}
-
-				@Override
-				public void onStatusChanged(String provider, int status,
-						Bundle extras) {
-					// TODO Auto-generated method stub
-					//////Log.i("openBicing", provider + " status Changed");
-				}
-
-			};
-			listeners.add(ll);
-			locationManager.requestLocationUpdates(providers.get(i), 60000, 25,
-					ll);
-		}
-		setLastKnownLocation();
-		scale = context.getResources().getDisplayMetrics().density;
-		setPaints();
-	}
-
-	public void stopUpdates() {
-		LocationManager locationManager = (LocationManager) this.context
-				.getSystemService(Context.LOCATION_SERVICE);
-		Iterator<LocationListener> ll = listeners.iterator();
-		while (ll.hasNext()) {
-			locationManager.removeUpdates(ll.next());
-		}
 	}
 	
-	private void setPaints(){
-		borderPaint = new Paint();
-		
-		borderPaint.setARGB(100, 147, 186, 228);
-		borderPaint.setStrokeWidth(CircleHelper.dip2px(STROKE_WIDTH, scale));
-		borderPaint.setAntiAlias(true);
-		borderPaint.setStyle(Paint.Style.STROKE);
-		
-		
-		fillPaint = new Paint(borderPaint);
-		fillPaint.setStyle(Paint.Style.FILL);
-		fillPaint.setAlpha(20);
-		
-		txtPaint = new Paint();
-		txtPaint.setARGB(255, 255, 255, 255);
-		txtPaint.setAntiAlias(true);
-		txtPaint.setTextAlign(Paint.Align.CENTER);
-		
-		arrowPaint = new Paint();
-		arrowPaint.setARGB(255, 147, 186, 228);
-		arrowPaint.setStrokeWidth(CircleHelper.dip2px(STROKE_WIDTH, scale));
-		arrowPaint.setAntiAlias(true);
-		arrowPaint.setStrokeCap(Cap.ROUND);
-		arrowPaint.setStyle(Paint.Style.FILL);
+
+	public void moveCenter(GeoPoint point){
+		this.point = point;
 	}
-
-	public void restartUpdates() {
-		//////Log.i("openBicing", "restarting updates");
-		this.stopUpdates();
-		LocationManager locationManager = (LocationManager) this.context
-				.getSystemService(Context.LOCATION_SERVICE);
-		List<String> providers = locationManager.getProviders(true);
-		listeners = new LinkedList<LocationListener>();
-		for (int i = 0; i < providers.size(); i++) {
-			LocationListener ll = new LocationListener() {
-				@Override
-				public void onLocationChanged(Location location) {
-					// TODO Auto-generated method stub
-					update(location);
-					////Log.i("openBicing", "Location has changed");
-				}
-
-				@Override
-				public void onProviderDisabled(String provider) {
-					// TODO Auto-generated method stub
-					////Log.i("openBicing", provider + " is disabled");
-
-				}
-
-				@Override
-				public void onProviderEnabled(String provider) {
-					// TODO Auto-generated method stub
-					////Log.i("openBicing", provider + " is enabled");
-				}
-
-				@Override
-				public void onStatusChanged(String provider, int status,
-						Bundle extras) {
-					// TODO Auto-generated method stub
-					////Log.i("openBicing", provider + " status Changed");
-				}
-
-			};
-			listeners.add(ll);
-			locationManager.requestLocationUpdates(providers.get(i), 60000, 25,
-					ll);
-		}
-		setLastKnownLocation();
-
-	}
-
-	public void setLastKnownLocation() {
-		LocationManager locationManager = (LocationManager) this.context
-				.getSystemService(Context.LOCATION_SERVICE);
-		Location location = locationManager.getLastKnownLocation("gps");
-		if (location == null) {
-			location = locationManager.getLastKnownLocation("network");
-		}
-		update(location);
-	}
-
-	public void update(Location location) {
-		if (location != null) {
-			Double lat = location.getLatitude() * 1E6;
-			Double lng = location.getLongitude() * 1E6;
-			this.point = new GeoPoint(lat.intValue(), lng.intValue());
-			handler.sendEmptyMessage(LOCATION_CHANGED);
-		} else {
-			Double lat = 41.3937256 * 1E6;
-			Double lng = 2.1647042 * 1E6;
-			this.point = new GeoPoint(lat.intValue(), lng.intValue());
-			handler.sendEmptyMessage(LOCATION_CHANGED);
-		}
-	}
-
+	
 	public void setRadius(int meters) {
 		this.radiusInMeters = meters;
 	}
@@ -238,7 +76,6 @@ public class HomeOverlay extends Overlay {
 	@Override
 	public boolean draw(Canvas canvas, MapView mapView, boolean shadow,
 			long when) {
-
 		try {
 			Projection astral = mapView.getProjection();
 			Point screenPixels = astral.toPixels(this.point, null);
@@ -247,12 +84,23 @@ public class HomeOverlay extends Overlay {
 			this.centerXInPixels = screenPixels.x;
 			this.centerYInPixels = screenPixels.y;
 
-			canvas.drawCircle(screenPixels.x, screenPixels.y,
-					this.radiusInPixels, borderPaint);
+			Paint paint = new Paint();
 
+			paint.setARGB(100, 147, 186, 228);
+			paint.setStrokeWidth(2);
+			paint.setAntiAlias(true);
+			paint.setStyle(Paint.Style.STROKE);
 			canvas.drawCircle(screenPixels.x, screenPixels.y,
-					this.radiusInPixels, fillPaint);
+					this.radiusInPixels, paint);
 
+			paint.setStyle(Paint.Style.FILL);
+			paint.setAlpha(20);
+			canvas.drawCircle(screenPixels.x, screenPixels.y,
+					this.radiusInPixels, paint);
+
+			Paint txtPaint = new Paint();
+			txtPaint.setARGB(255, 255, 255, 255);
+			txtPaint.setAntiAlias(true);
 			txtPaint.setTextSize(this.radiusInPixels / 4);
 			String text;
 			if (this.radiusInMeters > 1000) {
@@ -270,6 +118,7 @@ public class HomeOverlay extends Overlay {
 					* Math.sin(Math.PI));
 
 			// lol
+			txtPaint.setTextAlign(Paint.Align.CENTER);
 			Path tPath = new Path();
 			tPath.moveTo(x, y + this.radiusInPixels / 3);
 			tPath.lineTo(x + this.radiusInPixels * 2, y + this.radiusInPixels
@@ -285,19 +134,24 @@ public class HomeOverlay extends Overlay {
 	}
 
 	public void drawArrow(Canvas canvas, Point sPC, float length, double angle) {
-
+		Paint paint = new Paint();
+		paint.setARGB(255, 147, 186, 228);
+		paint.setStrokeWidth(2);
+		paint.setAntiAlias(true);
+		paint.setStrokeCap(Cap.ROUND);
+		paint.setStyle(Paint.Style.FILL);
 		float x = (float) (sPC.x + length * Math.cos(angle));
 		float y = (float) (sPC.y + length * Math.sin(angle));
-		canvas.drawLine(sPC.x, sPC.y, x, y, arrowPaint);
+		canvas.drawLine(sPC.x, sPC.y, x, y, paint);
 
+		// canvas.drawCircle(x, y, 10, paint);
 
-
-		canvas.drawCircle(sPC.x, sPC.y, CircleHelper.dip2px(CENTER_RADIUS, scale), arrowPaint);
+		canvas.drawCircle(sPC.x, sPC.y, 5, paint);
 
 		smallCircleX = x;
 		smallCircleY = y;
 
-		canvas.drawCircle(x, y, CircleHelper.dip2px(HANDLE_RADIUS, scale), arrowPaint);
+		canvas.drawCircle(x, y, 8, paint);
 
 	}
 
@@ -317,7 +171,7 @@ public class HomeOverlay extends Overlay {
 		int action = e.getAction();
 
 		boolean onCircle = CircleHelper.isOnCircle(x, y, this.smallCircleX,
-				this.smallCircleY, this.smallCircleRadius + CircleHelper.dip2px(20, scale));
+				this.smallCircleY, this.smallCircleRadius + 20);
 
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
@@ -358,6 +212,7 @@ public class HomeOverlay extends Overlay {
 						// Okay
 					}
 				}
+				
 				handler.sendEmptyMessage(MOTION_CIRCLE_STOP);
 			}
 			break;

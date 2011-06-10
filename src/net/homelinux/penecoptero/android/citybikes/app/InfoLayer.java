@@ -99,38 +99,42 @@ public class InfoLayer extends LinearLayout {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
-	public void inflateStation(StationOverlay tmp) {
-		this.station = tmp;
-		this.removeAllViews();
-		inflater.inflate(R.layout.stations_list_item, this);
+	public void inflateStation(StationOverlay tmp){
+		if (tmp != null){
+			this.station = tmp;
+			this.removeAllViews();
+			inflater.inflate(R.layout.stations_list_item, this);
 
-		TextView stId = (TextView) findViewById(R.id.station_list_item_id);
-		stId.setText(tmp.getStation().getName());
-		TextView stOc = (TextView) findViewById(R.id.station_list_item_ocupation);
-		stOc.setText(tmp.getStation().getOcupation());
-		TextView stDst = (TextView) findViewById(R.id.station_list_item_distance);
-		stDst.setText(tmp.getStation().getDistance());
-		TextView stWk = (TextView) findViewById(R.id.station_list_item_walking_time);
-		stWk.setText(tmp.getStation().getWalking());
+			TextView stId = (TextView) findViewById(R.id.station_list_item_id);
+			stId.setText(tmp.getStation().getName());
+			TextView stOc = (TextView) findViewById(R.id.station_list_item_ocupation);
+			stOc.setText(tmp.getStation().getOcupation());
+			TextView stDst = (TextView) findViewById(R.id.station_list_item_distance);
+			stDst.setText(tmp.getStation().getDistance());
+			TextView stWk = (TextView) findViewById(R.id.station_list_item_walking_time);
+			stWk.setText(tmp.getStation().getWalking());
 
-		int bg;
-		switch (tmp.getState()) {
-		case StationOverlay.GREEN_STATE:
-			bg = green;
-			break;
-		case StationOverlay.RED_STATE:
-			bg = red;
-			break;
-		case StationOverlay.YELLOW_STATE:
-			bg = yellow;
-			break;
-		default:
-			bg = R.drawable.fancy_gradient;
+			int bg;
+			switch (tmp.getState()) {
+			case StationOverlay.GREEN_STATE:
+				bg = green;
+				break;
+			case StationOverlay.RED_STATE:
+				bg = red;
+				break;
+			case StationOverlay.YELLOW_STATE:
+				bg = yellow;
+				break;
+			default:
+				bg = R.drawable.fancy_gradient;
+			}
+			LinearLayout sq = (LinearLayout) findViewById(R.id.station_list_item_square);
+			sq.setBackgroundResource(bg);
+			////Log.i("openBicing", "Inflated: " + this.station.getName());
+			populated = true;	
+		
 		}
-		LinearLayout sq = (LinearLayout) findViewById(R.id.station_list_item_square);
-		sq.setBackgroundResource(bg);
-		////Log.i("openBicing", "Inflated: " + this.station.getName());
-		populated = true;
+		
 	}
 
 	public boolean isPopulated() {

@@ -23,6 +23,7 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.google.android.maps.GeoPoint;
@@ -61,10 +62,6 @@ public class StationOverlay extends Overlay {
 	private Paint selectedPaint;
 	
 	private float scale;
-
-	
-
-	private int position = -1;
 	
 	private Station station;
 
@@ -99,12 +96,8 @@ public class StationOverlay extends Overlay {
 		this.selectedPaint.setStyle(Paint.Style.STROKE);
 	}
 
-	public void setPosition(int position) {
-		this.position = position;
-	}
-
 	public int getPosition() {
-		return this.position;
+		return this.station.getId();
 	}
 
 	public void setHandler(Handler handler) {
@@ -238,7 +231,7 @@ public class StationOverlay extends Overlay {
 			if (this.handler != null) {
 				Message msg = new Message();
 				msg.what = TOUCHED;
-				msg.arg1 = this.position;
+				msg.arg1 = this.station.getId();
 				msg.obj = this.station;
 				this.handler.sendMessage(msg);
 			}

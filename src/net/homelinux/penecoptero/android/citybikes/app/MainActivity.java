@@ -16,6 +16,7 @@
 
 package net.homelinux.penecoptero.android.citybikes.app;
 
+import java.util.Calendar;
 import java.util.List;
 
 import net.homelinux.penecoptero.android.citybikes.utils.CircleHelper;
@@ -29,16 +30,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -57,6 +63,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
+import com.google.android.maps.Projection;
 
 public class MainActivity extends MapActivity {
 
@@ -91,6 +98,11 @@ public class MainActivity extends MapActivity {
 	private boolean getBike = true;
 	
 	private float scale;
+	
+	private int zoom = -1;
+	
+	private Locator locator;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +120,7 @@ public class MainActivity extends MapActivity {
 			@Override
 			public void handleMessage(Message msg) {
 				if (msg.what == InfoLayer.POPULATE) {
-					infoLayer.inflateStation(stations.get(msg.arg1));
+					infoLayer.inflateStation(stations.getCurrent());
 				}
 			}
 		};
@@ -134,47 +146,66 @@ public class MainActivity extends MapActivity {
 			
 		});
 		
+		applyMapViewLongPressListener(mapView);
+		
 		settings = getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
 		
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		
-		
-		stations = new StationOverlayList(this, mapOverlays, new Handler() {
+		locator = new Locator(this, new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
-				if (msg.what == hOverlay.MOTION_CIRCLE_STOP && !view_all) {
-					// Home Circle has changed its radius
-					try {
-						view_near();
-					} catch (Exception e) {
-
-					}
-				} else if (msg.what == StationOverlay.TOUCHED && msg.arg1 != -1) {
-					// One station has been touched
-					stations.setCurrent(msg.arg1, getBike);
-					infoLayer.inflateStation(stations.getCurrent());
-				} else if (msg.what == hOverlay.LOCATION_CHANGED) {
+				if (msg.what == Locator.LOCATION_CHANGED) {
+					GeoPoint point = new GeoPoint(msg.arg1, msg.arg2);
+					hOverlay.moveCenter(point);
+					mapView.getController().animateTo(point);
+					mDbHelper.setCenter(point);
 					// Location has changed
-					mDbHelper.setCenter(hOverlay.getPoint());
-					
-						try {
-							mDbHelper.updateDistances(hOverlay.getPoint());
+					try {
+							mDbHelper.updateDistances(point);
 							infoLayer.update();
-
-							if (view_all) {
-								view_all();
-							} else {
+							if (!view_all) {
 								view_near();
 							}
-						} catch (Exception e) {
+					} catch (Exception e) {
 
-						}
-						;	
-					
-					
+					};
 				}
 			}
 		});
+		
+		hOverlay = new HomeOverlay(locator.getCurrentGeoPoint(),new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				if (msg.what == HomeOverlay.MOTION_CIRCLE_STOP){
+					try {
+						if (!view_all) {
+							view_near();
+						}
+						mapView.postInvalidate();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		
+		stations = new StationOverlayList(mapOverlays, new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				//Log.i("CityBikes","Message: "+Integer.toString(msg.what)+" "+Integer.toString(msg.arg1));
+				if (msg.what == StationOverlay.TOUCHED && msg.arg1 != -1) {
+					// One station has been touched
+					stations.setCurrent(msg.arg1, getBike);
+					infoLayer.inflateStation(stations.getCurrent());
+					//Log.i("CityBikes","Station touched: "+Integer.toString(msg.arg1));
+				}
+			}
+		});
+		
+		stations.addOverlay(hOverlay);
+		
 		mNDBAdapter = new NetworksDBAdapter(getApplicationContext());
 		
 		mDbHelper = new StationsDBAdapter(this, mapView, new Handler() {
@@ -182,12 +213,9 @@ public class MainActivity extends MapActivity {
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
 				case StationsDBAdapter.FETCH:
-					//////Log.i("openBicing", "Data fetched");
 					break;
 				case StationsDBAdapter.UPDATE_MAP:
-					//////Log.i("openBicing", "Map Updated");
 					progressDialog.dismiss();
-					SharedPreferences settings = getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putBoolean("reload_network", false);
 					editor.commit();
@@ -197,14 +225,14 @@ public class MainActivity extends MapActivity {
 								.inflateMessage(getString(R.string.no_bikes_around));
 					}
 					if (current != null) {
-						current.setSelected(true, getBike);
+						current.setSelected(true,getBike);
 						infoLayer.inflateStation(current);
 						if (view_all)
 							view_all();
 						else
 							view_near();
 					} else {
-						////Log.i("openBicing", "Error getting an station..");
+						
 					}
 					mapView.invalidate();
 					break;
@@ -224,11 +252,11 @@ public class MainActivity extends MapActivity {
 			}
 		}, stations);
 
-		mDbHelper.setCenter(stations.getHome().getPoint());
+		mDbHelper.setCenter(locator.getCurrentGeoPoint());
 
 		if (savedInstanceState != null) {
-			stations.updateHome();
-			stations.getHome().setRadius(
+			locator.unlockCenter();
+			hOverlay.setRadius(
 					savedInstanceState.getInt("homeRadius"));
 			this.view_all = savedInstanceState.getBoolean("view_all");
 		} else {
@@ -240,7 +268,6 @@ public class MainActivity extends MapActivity {
 			if (savedInstanceState == null) {
 				String strUpdated = mDbHelper.getLastUpdated();
 				
-				SharedPreferences settings = getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
 				Boolean dirty = settings.getBoolean("reload_network",false);
 				
 				if (strUpdated == null || dirty) {
@@ -250,6 +277,10 @@ public class MainActivity extends MapActivity {
 							"Last Updated: " + mDbHelper.getLastUpdated(),
 							Toast.LENGTH_LONG);
 					toast.show();
+					Calendar cal = Calendar.getInstance();
+					long now = cal.getTime().getTime();
+					if (Math.abs(now - mDbHelper.getLastUpdatedTime()) > 60000 * 5)
+						this.fillData(view_all);
 				}
 			}
 
@@ -262,9 +293,39 @@ public class MainActivity extends MapActivity {
 			view_all();
 		else
 			view_near();
-		hOverlay = stations.getHome();
 		////Log.i("openBicing", "CREATE!");
 	}
+	
+	protected void applyMapViewLongPressListener(MapView mapView) {
+		final MapView finalMapView = mapView;
+
+		        final GestureDetector gd = new GestureDetector(new GestureDetector.SimpleOnGestureListener(){
+		                @Override
+		                public void onLongPress(MotionEvent e) {
+		                        //Log.i("CityBikes","LONG PRESS!");
+		                        Projection astral = finalMapView.getProjection();
+		                        GeoPoint center = astral.fromPixels((int) e.getX(),(int) e.getY());
+		                        locator.lockCenter(center);
+		                }
+
+						@Override
+						public boolean onDoubleTap(MotionEvent e) {
+							// TODO Auto-generated method stub
+							 //Log.i("CityBikes","Double tap!");
+		                        Projection astral = finalMapView.getProjection();
+		                        GeoPoint center = astral.fromPixels((int) e.getX(),(int) e.getY());
+		                        locator.lockCenter(center);
+							return super.onDoubleTap(e);
+						}
+		                
+		        });
+		        mapView.setOnTouchListener(new OnTouchListener(){
+		                @Override
+		                public boolean onTouch(View v, MotionEvent ev) {
+		                        return gd.onTouchEvent(ev);
+		                }
+		        });
+		}
 	
 	private void showBikeNetworks(){
 		this.startActivityForResult(new Intent(this,
@@ -302,10 +363,7 @@ public class MainActivity extends MapActivity {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					if (mth == 0)
-						showAutoNetworkDialog(1);
-					else
-						showAutoNetworkDialog(0);
+					showAutoNetworkDialog(0);
 				}
 				
 			});
@@ -351,17 +409,42 @@ public class MainActivity extends MapActivity {
 	}
 
 	private void fillData(boolean all) {
-		
-		if (mNDBAdapter.isConfigured()){
+		if (mNDBAdapter != null && mNDBAdapter.isConfigured()){
 			Bundle data = new Bundle();
 			if (!all) {
-				GeoPoint center = stations.getHome().getPoint();
+				GeoPoint center = locator.getCurrentGeoPoint();
+				
+				if (center == null){
+					
+					//Do something..
+					int nid = settings.getInt("network_id",-1);
+					//Log.i("CityBikes","Current network is id: "+Integer.toString(nid));
+					if (nid!=-1){
+						try{
+							mNDBAdapter.load();
+							JSONObject network = mNDBAdapter.getNetworks(nid);
+							//Log.i("CityBikes",network.toString());
+							double lat = Integer.parseInt(network.getString("lat"))/1E6;
+							double lng = Integer.parseInt(network.getString("lng"))/1E6;
+							Location fallback = new Location("fallback");
+							fallback.setLatitude(lat);
+							fallback.setLongitude(lng);
+							locator.setFallbackLocation(fallback);
+							locator.unlockCenter();
+							center = locator.getCurrentGeoPoint();
+						}catch (Exception e){
+							//Log.i("CityBikes","We re fucked, that network aint existin");
+							e.printStackTrace();
+						}
+					}else{
+						//Log.i("CityBikes","We re fucked, why re we here?");
+					}
+				}
 				data.putInt(StationsDBAdapter.CENTER_LAT_KEY, center
 						.getLatitudeE6());
 				data.putInt(StationsDBAdapter.CENTER_LNG_KEY, center
 						.getLongitudeE6());
-				data.putInt(StationsDBAdapter.RADIUS_KEY, stations.getHome()
-						.getRadius());
+				data.putInt(StationsDBAdapter.RADIUS_KEY, hOverlay.getRadius());
 			}
 			
 			progressDialog = new ProgressDialog(this);
@@ -453,11 +536,14 @@ public class MainActivity extends MapActivity {
 
 	public void updateHome() {
 		try {
-			stations.updateHome();
-			mapView.getController().setCenter(stations.getHome().getPoint());
-			mapView.getController().setZoom(16);
+			locator.unlockCenter();
+			mapView.getController().animateTo(locator.getCurrentGeoPoint());
+			if (zoom == -1){
+				zoom = 16;
+				mapView.getController().setZoom(zoom);
+			}
 		} catch (Exception e) {
-			////Log.i("openBicing", "center is null..");
+			//Log.i("CityBikes", "center is null..");
 		}
 	}
 
@@ -467,14 +553,12 @@ public class MainActivity extends MapActivity {
 			populateList(true);
 		} catch (Exception e) {
 
-		}
-		;
+		};
 	}
 
 	public void view_near() {
 		try {
-			mDbHelper.populateStations(stations.getHome().getPoint(), stations
-					.getHome().getRadius());
+			mDbHelper.populateStations(locator.getCurrentGeoPoint(), hOverlay.getRadius());
 			populateList(false);
 			if (!infoLayer.isPopulated()) {
 				StationOverlay current = stations.getCurrent();
@@ -482,14 +566,12 @@ public class MainActivity extends MapActivity {
 					infoLayer.inflateStation(current);
 					current.setSelected(true, this.getBike);
 				} else {
-					infoLayer
-							.inflateMessage(getString(R.string.no_bikes_around));
+					infoLayer.inflateMessage(getString(R.string.no_bikes_around));
 				}
 			}
 		} catch (Exception e) {
 
-		}
-		;
+		};
 	}
 
 	@Override
@@ -534,8 +616,9 @@ public class MainActivity extends MapActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		////Log.i("openBicing", "SaveInstanceState!");
-		outState.putInt("homeRadius", stations.getHome().getRadius());
+		outState.putInt("homeRadius", hOverlay.getRadius());
 		outState.putBoolean("view_all", view_all);
+		outState.putInt("zoom", mapView.getZoomLevel());
 	}
 
 	@Override
@@ -555,7 +638,7 @@ public class MainActivity extends MapActivity {
 	protected void onStop() {
 		super.onStop();
 		////Log.i("openBicing", "STOP!");
-		hOverlay.stopUpdates();
+		locator.stopUpdates();
 		if (this.isFinishing())
 			this.finish();
 
@@ -566,10 +649,10 @@ public class MainActivity extends MapActivity {
 		//Log.i("CityBikes", "Activity Result");
 		if (requestCode == SETTINGS_ACTIVITY) {
 			if (resultCode == RESULT_OK) {
-				hOverlay.restartUpdates();
+				locator.restartUpdates();
 			}
 		}
-		SharedPreferences settings = getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
+
 		Boolean dirty = settings.getBoolean("reload_network",false);
 		if (dirty){
 			this.fillData(view_all);	
@@ -648,7 +731,7 @@ public class MainActivity extends MapActivity {
 
 					int pos = v.getId();
 					if (pos != -1) {
-						StationOverlay selected = stations.findById(pos);
+						StationOverlay selected = stations.getById(pos);
 						if (selected != null) {
 							stations.setCurrent(selected.getPosition(), getBike);
 							Message tmp = new Message();
