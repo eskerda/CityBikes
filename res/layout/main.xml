@@ -29,7 +29,7 @@
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:orientation="vertical" android:gravity="bottom">
-		<SlidingDrawer android:id="@+id/drawer"
+		<net.homelinux.penecoptero.android.citybikes.app.StationSlidingDrawer android:id="@+id/drawer"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:handle="@+id/handle" android:content="@+id/content"
 			android:topOffset="0px" android:bottomOffset="0px">
@@ -45,7 +45,7 @@
 				android:id="@id/content" android:layout_width="fill_parent"
 				android:layout_height="wrap_content">
 			</FrameLayout>
-		</SlidingDrawer>
+		</net.homelinux.penecoptero.android.citybikes.app.StationSlidingDrawer>
 		<LinearLayout android:layout_width="fill_parent"
 			android:orientation="vertical" android:layout_height="wrap_content"
 			android:layout_margin="0px">

@@ -84,16 +84,13 @@ public class MainActivity extends MapActivity {
 	private boolean view_all = false;
 	private HomeOverlay hOverlay;
 	private ProgressDialog progressDialog;
-	private FrameLayout fl;
-	private SlidingDrawer mSlidingDrawer;
+	private StationSlidingDrawer mSlidingDrawer;
 	private ToggleButton modeButton;
 	
 	private SharedPreferences settings;
 	private NetworksDBAdapter mNDBAdapter;
 
 	private Handler infoLayerPopulator;
-
-	private int green, red, yellow;
 	
 	private boolean getBike = true;
 	
@@ -110,8 +107,7 @@ public class MainActivity extends MapActivity {
 		setContentView(R.layout.main);
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		mapView = (MapView) findViewById(R.id.mapview);
-		fl = (FrameLayout) findViewById(R.id.content);
-		mSlidingDrawer = (SlidingDrawer) findViewById(R.id.drawer);
+		mSlidingDrawer = (StationSlidingDrawer) findViewById(R.id.drawer);
 		infoLayer = (InfoLayer) findViewById(R.id.info_layer);
 		
 		scale = getResources().getDisplayMetrics().density;
@@ -254,6 +250,23 @@ public class MainActivity extends MapActivity {
 
 		mDbHelper.setCenter(locator.getCurrentGeoPoint());
 
+		mSlidingDrawer.setHandler(new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				switch (msg.what){
+				case StationSlidingDrawer.ITEMCLICKED:
+					StationOverlay clicked = (StationOverlay) msg.obj;
+					stations.setCurrent(msg.arg1, getBike);
+					Message tmp = new Message();
+					tmp.what = InfoLayer.POPULATE;
+					tmp.arg1 = msg.arg1;
+					infoLayerPopulator.dispatchMessage(tmp);
+					mapView.getController().animateTo(
+					clicked.getCenter());
+				}
+			}
+		});
+		
 		if (savedInstanceState != null) {
 			locator.unlockCenter();
 			hOverlay.setRadius(
@@ -262,7 +275,7 @@ public class MainActivity extends MapActivity {
 		} else {
 			updateHome();
 		}
-
+		
 		try {
 			mDbHelper.loadStations();
 			if (savedInstanceState == null) {
@@ -661,7 +674,6 @@ public class MainActivity extends MapActivity {
 
 	public void populateList(boolean all) {
 		try {
-			ListView lv = new ListView(this);
 			List sts;
 			if (all) {
 				sts = mDbHelper.getMemory();
@@ -669,112 +681,19 @@ public class MainActivity extends MapActivity {
 				sts = mDbHelper.getMemory(hOverlay.getRadius());
 			}
 
-			green = R.drawable.green_gradient;
-			yellow = R.drawable.yellow_gradient;
-			red = R.drawable.red_gradient;
-			ArrayAdapter adapter = new ArrayAdapter(this,
-					R.layout.stations_list_item, sts) {
-				LayoutInflater mInflater = getLayoutInflater();
-
-				@Override
-				public View getView(int position, View convertView,
-						ViewGroup parent) {
-					View row;
-					if (convertView == null) {
-						row = mInflater.inflate(R.layout.stations_list_item,
-								null);
-					} else {
-						row = convertView;
-					}
-					StationOverlay tmp = (StationOverlay) getItem(position);
-					TextView stId = (TextView) row
-							.findViewById(R.id.station_list_item_id);
-					stId.setText(tmp.getStation().getName());
-					TextView stOc = (TextView) row
-							.findViewById(R.id.station_list_item_ocupation);
-					stOc.setText(tmp.getStation().getOcupation());
-					TextView stDst = (TextView) row
-							.findViewById(R.id.station_list_item_distance);
-					stDst.setText(tmp.getStation().getDistance());
-					TextView stWk = (TextView) row
-							.findViewById(R.id.station_list_item_walking_time);
-					stWk.setText(tmp.getStation().getWalking());
-
-					int bg;
-					switch (tmp.getState()) {
-					case StationOverlay.GREEN_STATE:
-						bg = green;
-						break;
-					case StationOverlay.RED_STATE:
-						bg = red;
-						break;
-					case StationOverlay.YELLOW_STATE:
-						bg = yellow;
-						break;
-					default:
-						bg = R.drawable.fancy_gradient;
-					}
-					LinearLayout sq = (LinearLayout) row
-							.findViewById(R.id.station_list_item_square);
-					sq.setBackgroundResource(bg);
-					row.setId(tmp.getStation().getId());
-					return row;
-				}
-			};
-			lv.setAdapter(adapter);
-
-			lv.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View v,
-						int position, long id) {
-
-					int pos = v.getId();
-					if (pos != -1) {
-						StationOverlay selected = stations.getById(pos);
-						if (selected != null) {
-							stations.setCurrent(selected.getPosition(), getBike);
-							Message tmp = new Message();
-							tmp.what = InfoLayer.POPULATE;
-							tmp.arg1 = selected.getPosition();
-							infoLayerPopulator.dispatchMessage(tmp);
-							mapView.getController().animateTo(
-									selected.getCenter());
-							int height = arg0.getHeight();
-							DisplayMetrics dm = new DisplayMetrics();
-							getWindowManager().getDefaultDisplay().getMetrics(
-									dm);
-							int w_height = dm.heightPixels;
-							if (height > w_height / 2) {
-								mSlidingDrawer.animateClose();
-							}
-						}
-					}
-				}
-			});
-			lv.setBackgroundColor(Color.BLACK);
-			lv.setLayoutParams(new LayoutParams(
-					android.view.ViewGroup.LayoutParams.FILL_PARENT,
-					android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
-			fl.setBackgroundColor(Color.BLACK);
-			fl.removeAllViews();
-			fl.addView(lv);
-
 			DisplayMetrics dm = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(dm);
 			int height = dm.heightPixels;
-				int calc = (lv.getCount() * CircleHelper.dip2px(50, scale) + CircleHelper.dip2px(45, scale));
+				int calc = (sts.size() * CircleHelper.dip2px(50, scale) + CircleHelper.dip2px(45, scale));
 				if (calc > height - CircleHelper.dip2px(145, scale))
 					calc = height - CircleHelper.dip2px(145, scale);
-				else if (lv.getCount() == 0)
+				else if (sts.size() == 0)
 					calc = 0;
 			
+			mSlidingDrawer.setStations(sts);
 			mSlidingDrawer.setLayoutParams(new LayoutParams(
 					android.view.ViewGroup.LayoutParams.FILL_PARENT, calc));
-			////Log.i("openBicing", Integer.toString(fl.getHeight()));
 		} catch (Exception e) {
-			//////Log.i("openBicing", "SHIT THIS SUCKS MEN ARGH FUCK IT!");
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
