@@ -19,27 +19,9 @@
     <PreferenceCategory
         android:title="@string/preferences_location">
             <PreferenceScreen
-            android:key="citybikes.preferences_location"
+            android:key="openbicing.preferences_location"
             android:title="@string/preferences_location_title"
             android:summary="@string/preferences_location_summary">
-        	</PreferenceScreen>
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/preferences_network">
-        	<!-- <CheckBoxPreference
-            android:key="autofind_network"
-            android:defaultValue="false"
-            android:title="@string/preferences_autofind_network_title"
-            android:summary="@string/preferences_autofind_network_summary" />-->
-            <PreferenceScreen
-            android:key="citybikes.preferences_network"
-            android:title="@string/preferences_network_title"
-            android:summary="@string/preferences_network_summary">
-        	</PreferenceScreen>
-        	<PreferenceScreen
-            android:key="citybikes.preferences_cache_network"
-            android:title="@string/preferences_cache_network_title"
-            android:summary="@string/preferences_cache_network_summary">
         	</PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>

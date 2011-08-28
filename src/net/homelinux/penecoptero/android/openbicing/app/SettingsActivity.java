@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.citybikes.app;
+package net.homelinux.penecoptero.android.openbicing.app;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,9 +36,6 @@ public class SettingsActivity extends PreferenceActivity implements
 		OnPreferenceChangeListener {
 
 	PreferenceScreen psLocation;
-	PreferenceScreen manualNetwork;
-	PreferenceScreen clearCache;
-	CheckBoxPreference autoNetwork;
 	private Context context;
 	
 	@Override
@@ -46,17 +43,11 @@ public class SettingsActivity extends PreferenceActivity implements
 		super.onCreate(savedInstanceState);
 
 		getPreferenceManager().setSharedPreferencesName(
-				CityBikes.PREFERENCES_NAME);
+				OpenBicing.PREFERENCES_NAME);
 		addPreferencesFromResource(R.xml.preferences);
 
-		psLocation = (PreferenceScreen) this.findPreference("citybikes.preferences_location");
-		
-		//autoNetwork = (CheckBoxPreference) this.findPreference("autofind_network");
-		
-		manualNetwork = (PreferenceScreen) this.findPreference("citybikes.preferences_network");
-		
-		clearCache = (PreferenceScreen) this.findPreference("citybikes.preferences_cache_network");
-		
+		psLocation = (PreferenceScreen) this.findPreference("openbicing.preferences_location");		
+				
 		this.context = getApplicationContext();
 		
 		
@@ -69,52 +60,11 @@ public class SettingsActivity extends PreferenceActivity implements
 						return false;
 					}
 				});
-		/*autoNetwork.setOnPreferenceChangeListener(new OnPreferenceChangeListener(){
-
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				manualNetwork.setEnabled(!(Boolean) newValue);
-				return true;
-			}
-			
-		});
-		manualNetwork.setEnabled(!autoNetwork.isChecked());*/
-		manualNetwork.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				// TODO Auto-generated method stub
-				launchManualNetworkSettings();
-				return false;
-			}
-		});
-		
-		clearCache.setOnPreferenceClickListener(new OnPreferenceClickListener (){
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				SharedPreferences settings = getApplicationContext().getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
-				SharedPreferences.Editor editor = settings.edit();
-				editor.remove("network_url");
-				editor.remove("reload_network");
-				editor.remove("network_id");
-				editor.remove("last_updated");
-				editor.remove("stations");
-				editor.remove("networks");
-				editor.putBoolean("reload_network", true);
-				editor.commit();
-				return false;
-			}
-		});
 	}
 	
 	private void launchLocationSettings() {
 		final Intent intent = new Intent(
 				android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-		this.startActivity(intent);
-	}
-	
-	private void launchManualNetworkSettings() {
-		final Intent intent = new Intent(this,BikeNetworkActivity.class);
 		this.startActivity(intent);
 	}
 

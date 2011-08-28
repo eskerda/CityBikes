@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.citybikes.utils;
+package net.homelinux.penecoptero.android.openbicing.utils;
 
 import android.util.Log;
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.citybikes.app;
+package net.homelinux.penecoptero.android.openbicing.app;
 
 import java.util.Calendar;
 import java.util.List;
 
-import net.homelinux.penecoptero.android.citybikes.utils.CircleHelper;
+import net.homelinux.penecoptero.android.openbicing.utils.CircleHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,7 +88,6 @@ public class MainActivity extends MapActivity {
 	private ToggleButton modeButton;
 	
 	private SharedPreferences settings;
-	private NetworksDBAdapter mNDBAdapter;
 
 	private Handler infoLayerPopulator;
 	
@@ -144,7 +143,7 @@ public class MainActivity extends MapActivity {
 		
 		applyMapViewLongPressListener(mapView);
 		
-		settings = getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
+		settings = getSharedPreferences(OpenBicing.PREFERENCES_NAME,0);
 		
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		
@@ -201,8 +200,6 @@ public class MainActivity extends MapActivity {
 		});
 		
 		stations.addOverlay(hOverlay);
-		
-		mNDBAdapter = new NetworksDBAdapter(getApplicationContext());
 		
 		mDbHelper = new StationsDBAdapter(this, mapView, new Handler() {
 			@Override
@@ -298,15 +295,13 @@ public class MainActivity extends MapActivity {
 			}
 
 		} catch (Exception e) {
-			////Log.i("openBicing", "SHIT ... SUCKS");
-		}
-		;
+		
+		};
 
 		if (view_all)
 			view_all();
 		else
 			view_near();
-		////Log.i("openBicing", "CREATE!");
 	}
 	
 	protected void applyMapViewLongPressListener(MapView mapView) {
@@ -339,119 +334,22 @@ public class MainActivity extends MapActivity {
 		                }
 		        });
 		}
-	
-	private void showBikeNetworks(){
-		this.startActivityForResult(new Intent(this,
-				BikeNetworkActivity.class), SETTINGS_ACTIVITY);
-	}
-	
-	private void showAutoNetworkDialog(int method){
-		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-		alertDialog.setIcon(android.R.drawable.ic_dialog_map);
-		final int mth = method;
-		try {
-			mNDBAdapter.update();
-			final JSONObject network = mNDBAdapter.getAutomaticNetwork(hOverlay.getPoint(),method);
-			alertDialog.setTitle(R.string.bike_network_alert_success_title);
-			alertDialog.setMessage(getString(R.string.bike_network_alert_success_text0)+":\n- ("+network.getString("city")+") "+network.getString("name")+"\n"+getString(R.string.bike_network_alert_success_text1));
-			alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.sure), new DialogInterface.OnClickListener(){
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					try {
-						mNDBAdapter.setManualNetwork(network.getInt("id"));
-						fillData(view_all);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-				
-			});
-			alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL,getString(R.string.try_again), new DialogInterface.OnClickListener(){
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					showAutoNetworkDialog(0);
-				}
-				
-			});
-			alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.manual), new DialogInterface.OnClickListener(){
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					showBikeNetworks();
-				}
-				
-			});
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-			alertDialog.setTitle(R.string.bike_network_alert_error_title);
-			
-			alertDialog.setMessage(getString(R.string.bike_network_alert_error_text));
-			alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.try_again), new DialogInterface.OnClickListener(){
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					if (mth == 0)
-						showAutoNetworkDialog(1);
-					else
-						showAutoNetworkDialog(0);
-					
-				}
-				
-			});
-			alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.manual), new DialogInterface.OnClickListener(){
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					showBikeNetworks();
-				}
-				
-			});
-		}
-		alertDialog.show();
-		
-	}
 
 	private void fillData(boolean all) {
-		if (mNDBAdapter != null && mNDBAdapter.isConfigured()){
 			Bundle data = new Bundle();
 			if (!all) {
 				GeoPoint center = locator.getCurrentGeoPoint();
-				
 				if (center == null){
-					
-					//Do something..
-					int nid = settings.getInt("network_id",-1);
-					//Log.i("CityBikes","Current network is id: "+Integer.toString(nid));
-					if (nid!=-1){
-						try{
-							mNDBAdapter.load();
-							JSONObject network = mNDBAdapter.getNetworks(nid);
-							//Log.i("CityBikes",network.toString());
-							double lat = Integer.parseInt(network.getString("lat"))/1E6;
-							double lng = Integer.parseInt(network.getString("lng"))/1E6;
-							Location fallback = new Location("fallback");
-							fallback.setLatitude(lat);
-							fallback.setLongitude(lng);
-							locator.setFallbackLocation(fallback);
-							locator.unlockCenter();
-							center = locator.getCurrentGeoPoint();
-						}catch (Exception e){
-							//Log.i("CityBikes","We re fucked, that network aint existin");
-							e.printStackTrace();
-						}
-					}else{
-						//Log.i("CityBikes","We re fucked, why re we here?");
-					}
+						//Log.i("CityBikes",network.toString());
+						// Barcelona lat/lng 41.3880, 2.1700
+						double lat = 41.3880;
+						double lng = 2.1700;
+						Location fallback = new Location("fallback");
+						fallback.setLatitude(lat);
+						fallback.setLongitude(lng);
+						locator.setFallbackLocation(fallback);
+						locator.unlockCenter();
+						center = locator.getCurrentGeoPoint();
 				}
 				data.putInt(StationsDBAdapter.CENTER_LAT_KEY, center
 						.getLatitudeE6());
@@ -467,53 +365,9 @@ public class MainActivity extends MapActivity {
 			try {
 				mDbHelper.sync(all, data);
 			} catch (Exception e) {
-				////Log.i("openBicing", "Error Updating?");
 				e.printStackTrace();
 				progressDialog.dismiss();
-			}
-			;	
-		}else{
-			//Log.i("CityBikes","First time!!! :D");
-			try{
-				mNDBAdapter.update();
-				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-				alertDialog.setIcon(android.R.drawable.ic_dialog_map);
-				alertDialog.setTitle(R.string.bike_network_alert_title);
-				alertDialog.setMessage(getString(R.string.bike_network_alert_text));
-				alertDialog.setButton(getString(R.string.automatic), new DialogInterface.OnClickListener(){
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-				});
-				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.automatic), new DialogInterface.OnClickListener(){
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						
-						showAutoNetworkDialog(0);
-						
-					}
-					
-				});
-				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.manual), new DialogInterface.OnClickListener(){
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						showBikeNetworks();
-					}
-					
-				});
-				alertDialog.show();
-			}catch (Exception e){
-				e.printStackTrace();
-				Toast toast = Toast.makeText(getApplicationContext(),getString(R.string.network_error),Toast.LENGTH_LONG);
-				toast.show();
-			}
-		}
+			};
 	}
 	
 	public void changeMode(boolean getBike){
@@ -551,12 +405,13 @@ public class MainActivity extends MapActivity {
 		try {
 			locator.unlockCenter();
 			mapView.getController().animateTo(locator.getCurrentGeoPoint());
-			if (zoom == -1){
-				zoom = 16;
-				mapView.getController().setZoom(zoom);
-			}
 		} catch (Exception e) {
 			//Log.i("CityBikes", "center is null..");
+			
+		}
+		if (zoom == -1){
+			zoom = 16;
+			mapView.getController().setZoom(zoom);
 		}
 	}
 

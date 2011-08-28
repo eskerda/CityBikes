@@ -1,4 +1,4 @@
-package net.homelinux.penecoptero.android.citybikes.app;
+package net.homelinux.penecoptero.android.openbicing.app;
 
 import java.util.LinkedList;
 import java.util.List;
