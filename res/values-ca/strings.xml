@@ -16,7 +16,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 * limitations under the License.
 */ -->
 <resources>
-<string name="app_name">Open Bicing</string>
+<string name="app_name">openVelib</string>
 <string name="menu_sync">Sincronitza</string>
 <string name="menu_location">On sóc?</string>
 <string name="menu_view_all">Veure-ho tot</string>

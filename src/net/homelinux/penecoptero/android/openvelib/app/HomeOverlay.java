@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.openbicing.app;
+package net.homelinux.penecoptero.android.openvelib.app;
 
-import net.homelinux.penecoptero.android.openbicing.utils.CircleHelper;
+import net.homelinux.penecoptero.android.openvelib.utils.CircleHelper;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;

@@ -19,7 +19,7 @@
     <PreferenceCategory
         android:title="@string/preferences_location">
             <PreferenceScreen
-            android:key="openbicing.preferences_location"
+            android:key="openvelib.preferences_location"
             android:title="@string/preferences_location_title"
             android:summary="@string/preferences_location_summary">
         	</PreferenceScreen>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.openbicing.app;
+package net.homelinux.penecoptero.android.openvelib.app;
 
 import java.io.BufferedReader;
 import java.io.IOException;

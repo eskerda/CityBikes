@@ -14,48 +14,30 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.openbicing.app;
+package net.homelinux.penecoptero.android.openvelib.app;
 
 import java.util.Calendar;
 import java.util.List;
 
-import net.homelinux.penecoptero.android.openbicing.utils.CircleHelper;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.AlertDialog;
+import net.homelinux.penecoptero.android.openvelib.utils.CircleHelper;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SlidingDrawer;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -143,7 +125,7 @@ public class MainActivity extends MapActivity {
 		
 		applyMapViewLongPressListener(mapView);
 		
-		settings = getSharedPreferences(OpenBicing.PREFERENCES_NAME,0);
+		settings = getSharedPreferences(OpenVelib.PREFERENCES_NAME,0);
 		
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		
@@ -340,10 +322,9 @@ public class MainActivity extends MapActivity {
 			if (!all) {
 				GeoPoint center = locator.getCurrentGeoPoint();
 				if (center == null){
-						//Log.i("CityBikes",network.toString());
-						// Barcelona lat/lng 41.3880, 2.1700
-						double lat = 41.3880;
-						double lng = 2.1700;
+						// Paris lat/lng 48.857, 2.353
+						double lat = 48.857;
+						double lng = 2.353;
 						Location fallback = new Location("fallback");
 						fallback.setLatitude(lat);
 						fallback.setLongitude(lng);

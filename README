@@ -1,5 +1,10 @@
-This is a version that only works on Barcelona.
+This is a version that only works on Paris.
 
-With its name, openBicing, it gets better visibility inside Android Market
+With its name, openVelib, it gets better visibility inside Android Market
+
+Also, it has been pretty popular, so ditching all its userbase right
+now is not an option. At some point, a transaction popup (openVelib -> CityBikes) would be nice.
+
+I am moving openVelib to the codebase of CityBikes, to keep updates easy
 
 Haters Gonna Hate!
