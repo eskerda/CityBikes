@@ -79,7 +79,6 @@ public class StationOverlay extends Overlay {
 		this.station = station;
 		scale = station.getContext().getResources().getDisplayMetrics().density;
 		this.initPaint();
-		this.updateStatus(getMode);
 	}
 	
 	private void initPaint(){
