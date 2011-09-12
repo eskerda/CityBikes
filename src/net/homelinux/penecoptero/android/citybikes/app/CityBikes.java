@@ -18,4 +18,5 @@ package net.homelinux.penecoptero.android.citybikes.app;
 
 public class CityBikes {
 	public static final String PREFERENCES_NAME = "citybikes";
+	public static final int BOOKMARK_CHANGE = 42;
 }

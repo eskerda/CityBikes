@@ -20,15 +20,21 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.google.android.maps.GeoPoint;
 
@@ -50,6 +56,7 @@ public class InfoLayer extends LinearLayout {
 	private TextView walking_time;
 	private Handler handler;
 	private Drawable oldBackground;
+	private ViewFlipper vf;
 
 	private LayoutInflater inflater;
 
@@ -60,10 +67,11 @@ public class InfoLayer extends LinearLayout {
 	public static final int NEXT_STATION = 200;
 	public static final int PREV_STATION = 201;
 	public static final int POPULATE = 202;
+	
+	private Button bookmarkButton;
 
 	private boolean populated = false;
 
-	private Animation animShow, animHide;
 
 	public InfoLayer(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -97,13 +105,14 @@ public class InfoLayer extends LinearLayout {
 		red = R.drawable.alpha_red_gradient;
 		inflater = (LayoutInflater) ctx
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		
 	}
 
-	public void inflateStation(StationOverlay tmp){
-		if (tmp != null){
+	public void inflateStation(StationOverlay tmp) {
+		if (tmp != null) {
 			this.station = tmp;
 			this.removeAllViews();
-			inflater.inflate(R.layout.stations_list_item, this);
+			inflater.inflate(R.layout.infolayer, this);
 
 			TextView stId = (TextView) findViewById(R.id.station_list_item_id);
 			stId.setText(tmp.getStation().getName());
@@ -130,11 +139,31 @@ public class InfoLayer extends LinearLayout {
 			}
 			LinearLayout sq = (LinearLayout) findViewById(R.id.station_list_item_square);
 			sq.setBackgroundResource(bg);
-			////Log.i("openBicing", "Inflated: " + this.station.getName());
-			populated = true;	
-		
+			// //Log.i("openBicing", "Inflated: " + this.station.getName());
+			populated = true;
+			vf = (ViewFlipper) findViewById(R.id.stationViewFlipper);
+			bookmarkButton = (Button) findViewById(R.id.bookmark_station);
+			if (bookmarkButton != null){
+				bookmarkButton.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						station.getStation().setBookmarked(!station.getStation().isBookmarked());
+						Message msg = new Message();
+						msg.what = CityBikes.BOOKMARK_CHANGE;
+						msg.arg1 = station.getStation().getId();
+						if (station.getStation().isBookmarked())
+							msg.arg2 = 1;
+						else
+							msg.arg2 = 0;
+						handler.sendMessage(msg);
+					}});			
+				
+			}
+			
 		}
-		
+
 	}
 
 	public boolean isPopulated() {
@@ -204,8 +233,52 @@ public class InfoLayer extends LinearLayout {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		return super.onTouchEvent(event);
+		Log.i("CityBikes", "Touch");
+		return true;
+	}
+
+	private Animation inFromRightAnimation() {
+		Animation inFromRight = new TranslateAnimation(
+				Animation.RELATIVE_TO_PARENT, +1.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f);
+		inFromRight.setDuration(250);
+		inFromRight.setInterpolator(new AccelerateInterpolator());
+		return inFromRight;
+	}
+
+	private Animation outToLeftAnimation() {
+		Animation outtoLeft = new TranslateAnimation(
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, -1.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f);
+		outtoLeft.setDuration(250);
+		outtoLeft.setInterpolator(new AccelerateInterpolator());
+		return outtoLeft;
+	}
+
+	private Animation inFromLeftAnimation() {
+		Animation inFromLeft = new TranslateAnimation(
+				Animation.RELATIVE_TO_PARENT, -1.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f);
+		inFromLeft.setDuration(250);
+		inFromLeft.setInterpolator(new AccelerateInterpolator());
+		return inFromLeft;
+	}
+
+	private Animation outToRightAnimation() {
+		Animation outtoRight = new TranslateAnimation(
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, +1.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f);
+		outtoRight.setDuration(250);
+		outtoRight.setInterpolator(new AccelerateInterpolator());
+		return outtoRight;
 	}
 
 	class MyGestureDetector extends SimpleOnGestureListener {
@@ -214,16 +287,26 @@ public class InfoLayer extends LinearLayout {
 				float velocityY) {
 			try {
 				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) {
-					////Log.i("openBicing", "down?");
+					// //Log.i("CityBikes", "down?");
 					return false;
 				}
 				// right to left swipe
 				if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
 						&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					handler.sendEmptyMessage(NEXT_STATION);
+					Log.i("CityBikes", "Right to Left");
+					// Do thingy!!!!
+
+					vf.setInAnimation(inFromRightAnimation());
+					vf.setOutAnimation(outToLeftAnimation());
+					vf.showNext();
+
 				} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
 						&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					handler.sendEmptyMessage(PREV_STATION);
+					Log.i("CityBikes", "Left to Right");
+
+					vf.setInAnimation(inFromLeftAnimation());
+					vf.setOutAnimation(outToRightAnimation());
+					vf.showPrevious();
 				}
 			} catch (Exception e) {
 				// nothing

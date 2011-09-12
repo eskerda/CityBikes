@@ -1,6 +1,7 @@
 package net.homelinux.penecoptero.android.citybikes.app;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 
@@ -10,6 +11,7 @@ public class Station {
 	private String timestamp;
 	private String name;
 	private int id;
+	private boolean bookmarked = false;
 
 	private String distanceText = "";
 	private String walkingText = "";
@@ -33,6 +35,14 @@ public class Station {
 
 	public int getId(){
 		return id;
+	}
+	
+	public boolean isBookmarked(){
+		return bookmarked;
+	}
+	
+	public void setBookmarked( boolean book ){
+		bookmarked = book;
 	}
 	
 	public String getName(){

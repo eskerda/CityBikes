@@ -207,7 +207,7 @@ public class StationOverlay extends Overlay {
 				screenPixels.y - this.radiusInPixels, screenPixels.x
 						+ this.radiusInPixels, screenPixels.y
 						+ this.radiusInPixels);
-
+		
 		canvas.drawOval(oval, this.currentPaint);
 
 		if (this.selected) {
