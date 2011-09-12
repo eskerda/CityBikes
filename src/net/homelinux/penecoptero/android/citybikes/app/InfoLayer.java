@@ -34,6 +34,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
 import com.google.android.maps.GeoPoint;
@@ -68,7 +69,7 @@ public class InfoLayer extends LinearLayout {
 	public static final int PREV_STATION = 201;
 	public static final int POPULATE = 202;
 	
-	private Button bookmarkButton;
+	private ToggleButton bookmarkButton;
 
 	private boolean populated = false;
 
@@ -142,8 +143,14 @@ public class InfoLayer extends LinearLayout {
 			// //Log.i("openBicing", "Inflated: " + this.station.getName());
 			populated = true;
 			vf = (ViewFlipper) findViewById(R.id.stationViewFlipper);
-			bookmarkButton = (Button) findViewById(R.id.bookmark_station);
+			bookmarkButton = (ToggleButton) findViewById(R.id.bookmark_station);
+			if (station.getStation().isBookmarked())
+				Log.i("CityBikes","This station is bookmarked");
+			else
+				Log.i("CityBikes","This station is not bookmarked");
+			
 			if (bookmarkButton != null){
+				bookmarkButton.setChecked(station.getStation().isBookmarked());
 				bookmarkButton.setOnClickListener(new OnClickListener(){
 
 					@Override
