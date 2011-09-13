@@ -19,11 +19,11 @@ package net.homelinux.penecoptero.android.citybikes.app;
 import net.homelinux.penecoptero.android.citybikes.utils.CircleHelper;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.google.android.maps.GeoPoint;
@@ -123,18 +123,18 @@ public class StationOverlay extends Overlay {
 			if (station.getFree() > YELLOW_STATE_MAX) {
 				this.status = GREEN_STATE;
 				this.radiusInMeters = GREEN_STATE_RADIUS;
-				this.currentPaint.setARGB(75, 168, 255, 87);
-				this.currentBorderPaint.setARGB(100, 168, 255, 87);
+				this.currentPaint.setARGB(85, 146, 186, 43);
+				this.currentBorderPaint.setARGB(100, 146, 186, 43);
 			} else if (station.getFree() > RED_STATE_MAX) {
 				this.status = YELLOW_STATE;
 				this.radiusInMeters = YELLOW_STATE_RADIUS;
-				this.currentPaint.setARGB(75, 255, 210, 72);
+				this.currentPaint.setARGB(85, 255, 210, 72);
 				this.currentBorderPaint.setARGB(100, 255, 210, 72);
 
 			} else {
 				this.status = RED_STATE;
 				this.radiusInMeters = RED_STATE_RADIUS;
-				this.currentPaint.setARGB(75, 240, 35, 17);
+				this.currentPaint.setARGB(85, 240, 35, 17);
 				this.currentBorderPaint.setARGB(100, 240, 35, 17);
 			}
 		}
@@ -144,18 +144,19 @@ public class StationOverlay extends Overlay {
 		if (station.getBikes() > YELLOW_STATE_MAX) {
 			this.status = GREEN_STATE;
 			this.radiusInMeters = GREEN_STATE_RADIUS;
-			this.currentPaint.setARGB(75, 168, 255, 87);
-			this.currentBorderPaint.setARGB(100, 168, 255, 87);
+			//#FF92BA2B
+			this.currentPaint.setARGB(85, 146, 186, 43);
+			this.currentBorderPaint.setARGB(100, 146, 186, 43);
 		} else if (station.getBikes() > RED_STATE_MAX) {
 			this.status = YELLOW_STATE;
 			this.radiusInMeters = YELLOW_STATE_RADIUS;
-			this.currentPaint.setARGB(75, 255, 210, 72);
+			this.currentPaint.setARGB(85, 255, 210, 72);
 			this.currentBorderPaint.setARGB(100, 255, 210, 72);
 
 		} else {
 			this.status = RED_STATE;
 			this.radiusInMeters = RED_STATE_RADIUS;
-			this.currentPaint.setARGB(75, 240, 35, 17);
+			this.currentPaint.setARGB(85, 240, 35, 17);
 			this.currentBorderPaint.setARGB(100, 240, 35, 17);
 		}
 	}
@@ -208,15 +209,42 @@ public class StationOverlay extends Overlay {
 						+ this.radiusInPixels, screenPixels.y
 						+ this.radiusInPixels);
 		
-		canvas.drawOval(oval, this.currentPaint);
-
-		if (this.selected) {
-			canvas.drawCircle(screenPixels.x, screenPixels.y,
-					this.radiusInPixels, this.selectedPaint);
+		if (this.station.isBookmarked()){
+			canvas.drawPath(createStar(5, screenPixels, (float) (this.radiusInPixels * 1.5) , (float) (this.radiusInPixels * 1.5 / 2)), this.currentPaint);
+			if (this.selected)
+				canvas.drawPath(createStar(5, screenPixels, (float) (this.radiusInPixels * 1.5) , (float) (this.radiusInPixels * 1.5 / 2)), this.selectedPaint);
 		} else {
-			canvas.drawCircle(screenPixels.x, screenPixels.y,
-					this.radiusInPixels, this.currentBorderPaint);
+			canvas.drawOval(oval, this.currentPaint);
+			if (this.selected) {
+				canvas.drawCircle(screenPixels.x, screenPixels.y,
+						this.radiusInPixels, this.selectedPaint);
+			}
 		}
+	}
+	
+	public static Path createStar(int arms, Point center, float rOuter, float rInner)
+	{
+	    double angle = Math.PI / arms;
+	    
+	    Path path = new Path();
+	    for (int i = 0; i < arms * 2; i++){
+	    	float d;
+	    	if (i % 2 == 0)
+	    		d = rOuter;
+	    	else
+	    		d = rInner;
+	    	double tangle = angle * i;
+	    	
+	    	if (i == 0){
+			    path.moveTo(center.x + (float) Math.cos(tangle) * d, 
+		    			center.y + (float) Math.sin(tangle) * d);
+	    	} else {
+			    path.lineTo(center.x + (float) Math.cos(tangle) * d, 
+		    			center.y + (float) Math.sin(tangle) * d);
+	    	}
+	    }
+	    path.close();
+	    return path;
 	}
 
 	@Override
