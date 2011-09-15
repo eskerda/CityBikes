@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- /*
+ * Copyright (C) 2010 Lluís Esquerda
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */ -->
+<resources>
+    <string name="app_name">CityBikes</string>
+    <string name="menu_sync">Sync</string>
+    <string name="menu_location">Ma position</string>
+    <string name="menu_view_all">Tout voir</string>
+    <string name="menu_settings">Réglages</string>
+    <string name="menu_help">Aide</string>
+    <string name="no_bikes_around">Il n\'y a pas de vélos autour de vous. Vous devriez essayer de redimensionner le périmètre en glissant le point bleu ou en cochant \"Tout voir\" dans le menu</string>
+    <string name="bikes">vélos</string>
+    <string name="free">libres</string>
+    <string name="network_error">Erreur réseau</string>
+    <string name="loading">En cours de chargement...</string>
+    <string name="preferences_location">Ma position</string>
+    <string name="preferences_location_title">Selectionner un fournisseur de localisation</string>
+    <string name="preferences_location_summary">Cliquer pour changer les fournisseurs de localisation (réseau et GPS)</string>
+    
+    
+    
+	<string name="preferences_cache_network_summary">Restaure l\'état de l\'application comme si elle venait d\'être installée (conserve les favorits)</string>
+    <string name="preferences_autofind_network_title">Sélection automatique du réseau</string>
+    <string name="preferences_autofind_network_summary">Autoriser la sélection automatique du réseau en fonction de votre position</string>
+    <string name="preferences_cache_network_title">Nettoyer le cache</string>
+	<string name="bike_network_alert_title">Sélection du réseau de vélos</string>
+    <string name="preferences_network">Réseau de vélos</string>
+    <string name="try_again">Ré-essayer</string>
+    <string name="bike_network_alert_success_title">Réseau trouvé</string>
+    <string name="bike_network_alert_error_title">Pas de réseau trouvé</string>
+    <string name="bike_network_alert_text">Je peux trouver un réseau de vélos pour vous sur base de votre position.\nOu vous pouvez le sélectionner manuellement depuis une liste.\nQuel est votre choix?</string>
+    <string name="bike_network_alert_success_text1">Est-ce correct?</string>
+    <string name="bike_network_alert_success_text0">J\'ai détecté</string>
+    <string name="sure">Sûr</string>
+    <string name="preferences_network_summary">Sélectionner manuellement votre réseau de vélos</string>
+    <string name="preferences_network_title">Sélectionner votre réseau de vélos</string>
+    <string name="automatic">Automatique</string>
+    <string name="manual">Manuel</string>
+    <string name="bike_network_alert_error_text">Ré-essayez ou sélectionnez manuellement depuis une liste</string>
+</resources>
