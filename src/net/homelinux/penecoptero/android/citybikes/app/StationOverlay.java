@@ -36,6 +36,8 @@ public class StationOverlay extends Overlay {
 	private int status;
 	private Handler handler;
 	private boolean selected = false;
+	
+	private boolean getMode = true;
 
 	public static final int BLACK_STATE = 0;
 	public static final int RED_STATE = 1;
@@ -50,6 +52,7 @@ public class StationOverlay extends Overlay {
 	private static final int RED_STATE_MAX = 0;
 	private static final int YELLOW_STATE_MAX = 8;
 
+	private static final int BLACK_STATE_RADIUS = 80;
 	private static final int RED_STATE_RADIUS = 80;
 	private static final int YELLOW_STATE_RADIUS = 80;
 	private static final int GREEN_STATE_RADIUS = 80;
@@ -76,7 +79,6 @@ public class StationOverlay extends Overlay {
 		this.station = station;
 		scale = station.getContext().getResources().getDisplayMetrics().density;
 		this.initPaint();
-		this.updateStatus();
 	}
 	
 	private void initPaint(){
@@ -117,7 +119,14 @@ public class StationOverlay extends Overlay {
 	}
 	
 	public void updateStatus (boolean onGetMode){
-		if (onGetMode){
+		getMode = onGetMode;
+		if (station.getFree() == 0 && station.getBikes() == 0){
+			this.status = BLACK_STATE;
+			this.radiusInMeters = BLACK_STATE_RADIUS;
+			this.currentPaint.setARGB(50, 200, 200, 200);
+			this.currentBorderPaint.setARGB(75, 190, 190, 190);
+		}
+		else if (onGetMode){
 			updateStatus();
 		}else{
 			if (station.getFree() > YELLOW_STATE_MAX) {
@@ -163,7 +172,7 @@ public class StationOverlay extends Overlay {
 	
 	public void setSelected(boolean selected) {
 		this.selected = selected;
-		updateStatus();
+		updateStatus(getMode);
 		if (this.selected) {
 			this.radiusInMeters = SELECTED_STATE_RADIUS;
 		}
@@ -180,7 +189,7 @@ public class StationOverlay extends Overlay {
 
 	public void update() {
 		// TODO Update aviability.. :D
-		this.updateStatus();
+		this.updateStatus(getMode);
 	}
 
 	private void calculatePixelRadius(MapView mapView) {

@@ -240,7 +240,7 @@ public class MainActivity extends MapActivity {
 					////Log.i("openBicing", "Network error, last update from " + mDbHelper.getLastUpdated());
 					Toast toast = Toast.makeText(getApplicationContext(),
 							getString(R.string.network_error)
-									+ mDbHelper.getLastUpdated(),
+									+ " " + mDbHelper.getLastUpdated(),
 							Toast.LENGTH_LONG);
 					toast.show();
 					break;
@@ -522,6 +522,13 @@ public class MainActivity extends MapActivity {
 		this.populateList(this.view_all);
 		infoLayer.update();
 		mapView.invalidate();
+		Toast toast;
+		if (getBike){
+			toast = Toast.makeText(getApplicationContext(),getString(R.string.get_bike_mode),Toast.LENGTH_SHORT);
+		} else {
+			toast = Toast.makeText(getApplicationContext(),getString(R.string.park_bike_mode),Toast.LENGTH_SHORT);
+		}
+		toast.show();
 	}
 
 	@Override

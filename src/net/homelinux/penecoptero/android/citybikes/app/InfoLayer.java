@@ -55,7 +55,7 @@ public class InfoLayer extends LinearLayout {
 
 	private Context ctx;
 
-	private int red, green, yellow;
+	private int black, red, green, yellow;
 
 	public static final int NEXT_STATION = 200;
 	public static final int PREV_STATION = 201;
@@ -92,6 +92,7 @@ public class InfoLayer extends LinearLayout {
 			}
 		};
 		this.setOnTouchListener(gestureListener);
+		black = R.drawable.alpha_black_gradient;
 		green = R.drawable.alpha_green_gradient;
 		yellow = R.drawable.alpha_yellow_gradient;
 		red = R.drawable.alpha_red_gradient;
@@ -116,6 +117,9 @@ public class InfoLayer extends LinearLayout {
 
 			int bg;
 			switch (tmp.getState()) {
+			case StationOverlay.BLACK_STATE:
+				bg = black;
+				break;
 			case StationOverlay.GREEN_STATE:
 				bg = green;
 				break;
@@ -173,6 +177,9 @@ public class InfoLayer extends LinearLayout {
 			this.distance.setText(this.station.getStation().getDistance());
 			int bg;
 			switch (station.getState()) {
+			case StationOverlay.BLACK_STATE:
+				bg = this.black;
+				break;
 			case StationOverlay.GREEN_STATE:
 				bg = this.green;
 				break;

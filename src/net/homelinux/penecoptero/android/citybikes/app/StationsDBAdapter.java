@@ -77,6 +77,8 @@ public class StationsDBAdapter implements Runnable {
 	private long last_updated_time;
 
 	private GeoPoint center;
+	
+	private boolean getBike = true;
 
 	public StationsDBAdapter(Context ctx, MapView mapView, Handler handler,
 			StationOverlayList stationsDisplayList) {
@@ -140,7 +142,7 @@ public class StationsDBAdapter implements Runnable {
 
 			point = new GeoPoint(lat, lng);
 			Station stat = new Station(id, name, bikes, free, timestamp, mCtx, point);
-			StationOverlay memoryStation = new StationOverlay(stat);
+			StationOverlay memoryStation = new StationOverlay(stat, getBike);
 			stationsMemoryMap.add(memoryStation);
 		}
 	}
@@ -190,7 +192,7 @@ public class StationsDBAdapter implements Runnable {
 			timestamp = station.getString("timestamp");
 			point = new GeoPoint(lat, lng);
 			Station stat = new Station(id, name, bikes, free, timestamp, mCtx, point);
-			StationOverlay memoryStation = new StationOverlay(stat);
+			StationOverlay memoryStation = new StationOverlay(stat, getBike);
 			memoryStation.getStation().setMetersDistance(CircleHelper.gp2m(center, point));
 			memoryStation.getStation().populateStrings();
 			stationsMemoryMap.add(memoryStation);
@@ -298,6 +300,7 @@ public class StationsDBAdapter implements Runnable {
 	}
 
 	public void changeMode (boolean getBike){
+		this.getBike = getBike;
 		Iterator i = stationsMemoryMap.iterator();
 		while (i.hasNext()){
 			Object tmp = i.next();
