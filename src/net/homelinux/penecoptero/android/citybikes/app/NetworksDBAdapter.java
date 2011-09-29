@@ -18,7 +18,7 @@ import com.google.android.maps.GeoPoint;
 
 
 public class NetworksDBAdapter {
-	public static final String NETWORKS_FEED = "http://penecoptero.homelinux.net/citybikes/networks.json";
+	public static final String NETWORKS_FEED = "http://api.citybik.es/networks.json";
 	private RESTHelper mRESTHelper;
 	private String RAWNetworks;
 	private JSONArray networks;
@@ -119,7 +119,9 @@ public class NetworksDBAdapter {
 	
 	public void setManualNetwork(int id) throws Exception{
 		String url = networks.getJSONObject(id).getString("url");
+		String name = networks.getJSONObject(id).getString("name");
 		SharedPreferences.Editor editor = settings.edit();
+		editor.putString("network_name", name);
 		editor.putString("network_url", url);
 		editor.putBoolean("reload_network", true);
 		editor.putInt("network_id", id);

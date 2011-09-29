@@ -32,7 +32,12 @@ public class Station {
 		this.context = context;
 		this.point = center;
 	}
-
+	
+	public int getHash(){
+		String notHash = Integer.toString(this.point.getLatitudeE6())+","+Integer.toString(this.point.getLongitudeE6());
+		return notHash.hashCode();
+	}
+	
 	public int getId(){
 		return id;
 	}

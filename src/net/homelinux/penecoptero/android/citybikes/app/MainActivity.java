@@ -100,7 +100,6 @@ public class MainActivity extends MapActivity {
 		mapView = (MapView) findViewById(R.id.mapview);
 		mSlidingDrawer = (StationSlidingDrawer) findViewById(R.id.drawer);
 		infoLayer = (InfoLayer) findViewById(R.id.info_layer);
-		
 		scale = getResources().getDisplayMetrics().density;
 		//Log.i("CityBikes","ON CREATEEEEEEEEE!!!!!");
 		infoLayerPopulator = new Handler() {
@@ -111,37 +110,25 @@ public class MainActivity extends MapActivity {
 				}
 				if (msg.what == CityBikes.BOOKMARK_CHANGE){
 					int id = msg.arg1;
-					int bookmarked = msg.arg2;
-					String network_url = settings.getString("network_url", "");
-					try {
-						JSONArray stationsBookmarked = new JSONArray(settings.getString(network_url+"_bookmarks","[]"));
-						SharedPreferences.Editor editor = settings.edit();
-						if (bookmarked == 1){
-							stationsBookmarked.put(id);
-							Log.i("CityBikes",stationsBookmarked.toString());
-							editor.putString(network_url+"_bookmarks", stationsBookmarked.toString());
-						} else {
-							JSONArray newStations = new JSONArray();
-							for (int i = 0; i < stationsBookmarked.length(); i++){
-								if (stationsBookmarked.getInt(i) == id){
-									
-								}else{
-									newStations.put(stationsBookmarked.getInt(i));
-								}
-							}
-							editor.putString(network_url+"_bookmarks", newStations.toString());
-						}
-						editor.commit();
-						mDbHelper.reloadBookmarked();
-						if (!view_all) {
-							view_near();
-						}
-						mapView.postInvalidate();
-						
-					} catch (Exception e){
-						Log.i("CityBikes","EROOOORRL");
+					boolean bookmarked;
+					if (msg.arg2 == 0){
+						bookmarked = false;
+					} else{
+						bookmarked = true;
+					}
+					StationOverlay station = stations.getById(id);
+					try{
+						BookmarkManager bm = new BookmarkManager(getApplicationContext());
+						bm.setBookmarked(station.getStation(), !bookmarked);
+					}catch (Exception e){
+						Log.i("CityBikes","Error bookmarking station");
+						e.printStackTrace();
 					}
 					
+					if (!view_all) {
+						view_near();
+					}
+					mapView.postInvalidate();
 				}
 			}
 		};
