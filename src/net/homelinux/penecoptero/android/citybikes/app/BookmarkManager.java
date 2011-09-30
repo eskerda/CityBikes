@@ -109,8 +109,6 @@ public class BookmarkManager {
 			bookmarks.put(netnick, stations);
 			editor.putString("bookmarks", bookmarks.toString());
 			editor.commit();
-			Log.i("CityBikes","Storing... ?");
-			Log.i("CityBikes",bookmarks.toString());
 		} catch (JSONException e) {
 			//Unable to store bookmarks.. What should we do?
 			Log.i("CityBikes","Unable to store bookmarks");

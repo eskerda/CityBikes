@@ -231,7 +231,6 @@ public class StationsDBAdapter implements Runnable {
 				}
 			}
 		});
-		////Log.i("openBicing", "Building Memory with distances and order...");
 	}
 
 	public void reorder() {

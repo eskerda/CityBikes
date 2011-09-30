@@ -107,6 +107,7 @@ public class MainActivity extends MapActivity {
 			public void handleMessage(Message msg) {
 				if (msg.what == InfoLayer.POPULATE) {
 					infoLayer.inflateStation(stations.getCurrent());
+					
 				}
 				if (msg.what == CityBikes.BOOKMARK_CHANGE){
 					int id = msg.arg1;

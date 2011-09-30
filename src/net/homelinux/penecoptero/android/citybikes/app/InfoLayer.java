@@ -18,6 +18,8 @@ package net.homelinux.penecoptero.android.citybikes.app;
 
 import net.homelinux.penecoptero.android.citybikes.view.FlingTooltip;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -77,7 +79,7 @@ public class InfoLayer extends LinearLayout {
 
 	private boolean populated = false;
 	
-	private int lastDisplayedChild = 0;
+	private int lastDisplayedChild = -1;
 
 
 	public InfoLayer(Context context, AttributeSet attrs) {
@@ -94,6 +96,26 @@ public class InfoLayer extends LinearLayout {
 
 	public void setHandler(Handler handler) {
 		this.handler = handler;
+	}
+	
+	private void checkFirstTime(){
+		if (isFirstTime()){
+			if (vf!=null && flingTooltip != null){
+				flingTooltip.setVisibility(View.VISIBLE);
+			}
+		}
+	}
+	private boolean isFirstTime(){
+		SharedPreferences settings = ctx.getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
+		boolean firstTime = settings.getBoolean("first_time", true);
+		return firstTime;
+	}
+
+	private void saveFirstTime(){
+		SharedPreferences settings = ctx.getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
+		Editor editor = settings.edit();
+		editor.putBoolean("first_time", false);
+		editor.commit();
 	}
 
 	private void init() {
@@ -156,10 +178,6 @@ public class InfoLayer extends LinearLayout {
 			bookmarkButton = (ToggleButton) findViewById(R.id.bookmark_station);
 			flingTooltip = (FlingTooltip) findViewById(R.id.FlingTooltip);
 			flingTooltip.setVisibility(View.INVISIBLE);
-			if (station.getStation().isBookmarked())
-				Log.i("CityBikes","This station is bookmarked");
-			else
-				Log.i("CityBikes","This station is not bookmarked");
 			
 			if (bookmarkButton != null){
 				bookmarkButton.setChecked(station.getStation().isBookmarked());
@@ -180,6 +198,7 @@ public class InfoLayer extends LinearLayout {
 					}});			
 				
 			}
+			checkFirstTime();
 			
 		}
 
@@ -288,6 +307,9 @@ public class InfoLayer extends LinearLayout {
 					break;
 			}
 			lastDisplayedChild = vf.getDisplayedChild();
+			if (isFirstTime()){
+				saveFirstTime();
+			}
 		}
 		
 		return true;
@@ -409,7 +431,6 @@ public class InfoLayer extends LinearLayout {
 				// right to left swipe
 				if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
 						&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					Log.i("CityBikes", "Right to Left");
 					// Do thingy!!!!
 
 					vf.setInAnimation(inFromRightAnimation());
@@ -418,7 +439,6 @@ public class InfoLayer extends LinearLayout {
 
 				} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
 						&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					Log.i("CityBikes", "Left to Right");
 
 					vf.setInAnimation(inFromLeftAnimation());
 					vf.setOutAnimation(outToRightAnimation());
