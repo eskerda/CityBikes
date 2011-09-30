@@ -50,7 +50,6 @@
     <string name="bike_network_alert_success_text1">Is that accurate?</string>
     <string name="sure">Sure</string>
     <string name="automatic">Automatic</string>
-    
     <string name="get_bike_mode">Find a bike</string>
     <string name="park_bike_mode">Find a parking</string>
 </resources>

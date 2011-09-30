@@ -53,7 +53,8 @@
 				android:layout_margin="0px" android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:paddingTop="5dip"
 				android:paddingLeft="5dip" android:paddingBottom="5dip"
-				android:background="@drawable/fancy_gradient" android:paddingRight="5dip">
+				android:background="@drawable/fancy_gradient"
+				 android:paddingRight="5dip">
 			</net.homelinux.penecoptero.android.citybikes.app.InfoLayer>
 		</LinearLayout>
 	</LinearLayout>

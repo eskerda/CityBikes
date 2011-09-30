@@ -21,6 +21,7 @@ import java.util.List;
 
 import net.homelinux.penecoptero.android.citybikes.utils.CircleHelper;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +30,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,24 +38,14 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SlidingDrawer;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -77,7 +67,8 @@ public class MainActivity extends MapActivity {
 	public static final int KEY_LAT = 0;
 	public static final int KEY_LNG = 1;
 	public static final int SETTINGS_ACTIVITY = 0;
-
+	
+	
 	private StationOverlayList stations;
 	private StationsDBAdapter mDbHelper;
 	private InfoLayer infoLayer;
@@ -109,7 +100,6 @@ public class MainActivity extends MapActivity {
 		mapView = (MapView) findViewById(R.id.mapview);
 		mSlidingDrawer = (StationSlidingDrawer) findViewById(R.id.drawer);
 		infoLayer = (InfoLayer) findViewById(R.id.info_layer);
-		
 		scale = getResources().getDisplayMetrics().density;
 		//Log.i("CityBikes","ON CREATEEEEEEEEE!!!!!");
 		infoLayerPopulator = new Handler() {
@@ -118,9 +108,32 @@ public class MainActivity extends MapActivity {
 				if (msg.what == InfoLayer.POPULATE) {
 					infoLayer.inflateStation(stations.getCurrent());
 				}
+				if (msg.what == CityBikes.BOOKMARK_CHANGE){
+					int id = msg.arg1;
+					boolean bookmarked;
+					if (msg.arg2 == 0){
+						bookmarked = false;
+					} else{
+						bookmarked = true;
+					}
+					StationOverlay station = stations.getById(id);
+					try{
+						BookmarkManager bm = new BookmarkManager(getApplicationContext());
+						bm.setBookmarked(station.getStation(), !bookmarked);
+					}catch (Exception e){
+						Log.i("CityBikes","Error bookmarking station");
+						e.printStackTrace();
+					}
+					
+					if (!view_all) {
+						view_near();
+					}
+					mapView.postInvalidate();
+				}
 			}
 		};
-
+		
+		infoLayer.setHandler(infoLayerPopulator);
 		RelativeLayout.LayoutParams zoomControlsLayoutParams = new RelativeLayout.LayoutParams(
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);

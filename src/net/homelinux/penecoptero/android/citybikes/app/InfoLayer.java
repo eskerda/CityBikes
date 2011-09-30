@@ -16,19 +16,28 @@
 
 package net.homelinux.penecoptero.android.citybikes.app;
 
+import net.homelinux.penecoptero.android.citybikes.view.FlingTooltip;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+import android.widget.ViewFlipper;
 
 import com.google.android.maps.GeoPoint;
 
@@ -48,8 +57,11 @@ public class InfoLayer extends LinearLayout {
 	private TextView ocupation;
 	private TextView distance;
 	private TextView walking_time;
+	
+	private FlingTooltip flingTooltip;
 	private Handler handler;
 	private Drawable oldBackground;
+	private ViewFlipper vf;
 
 	private LayoutInflater inflater;
 
@@ -60,10 +72,13 @@ public class InfoLayer extends LinearLayout {
 	public static final int NEXT_STATION = 200;
 	public static final int PREV_STATION = 201;
 	public static final int POPULATE = 202;
+	
+	private ToggleButton bookmarkButton;
 
 	private boolean populated = false;
+	
+	private int lastDisplayedChild = 0;
 
-	private Animation animShow, animHide;
 
 	public InfoLayer(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -98,13 +113,14 @@ public class InfoLayer extends LinearLayout {
 		red = R.drawable.alpha_red_gradient;
 		inflater = (LayoutInflater) ctx
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		
 	}
 
-	public void inflateStation(StationOverlay tmp){
-		if (tmp != null){
+	public void inflateStation(StationOverlay tmp) {
+		if (tmp != null) {
 			this.station = tmp;
 			this.removeAllViews();
-			inflater.inflate(R.layout.stations_list_item, this);
+			inflater.inflate(R.layout.infolayer, this);
 
 			TextView stId = (TextView) findViewById(R.id.station_list_item_id);
 			stId.setText(tmp.getStation().getName());
@@ -134,11 +150,39 @@ public class InfoLayer extends LinearLayout {
 			}
 			LinearLayout sq = (LinearLayout) findViewById(R.id.station_list_item_square);
 			sq.setBackgroundResource(bg);
-			////Log.i("openBicing", "Inflated: " + this.station.getName());
-			populated = true;	
-		
+			// //Log.i("openBicing", "Inflated: " + this.station.getName());
+			populated = true;
+			vf = (ViewFlipper) findViewById(R.id.stationViewFlipper);
+			bookmarkButton = (ToggleButton) findViewById(R.id.bookmark_station);
+			flingTooltip = (FlingTooltip) findViewById(R.id.FlingTooltip);
+			flingTooltip.setVisibility(View.INVISIBLE);
+			if (station.getStation().isBookmarked())
+				Log.i("CityBikes","This station is bookmarked");
+			else
+				Log.i("CityBikes","This station is not bookmarked");
+			
+			if (bookmarkButton != null){
+				bookmarkButton.setChecked(station.getStation().isBookmarked());
+				bookmarkButton.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						station.getStation().setBookmarked(!station.getStation().isBookmarked());
+						Message msg = new Message();
+						msg.what = CityBikes.BOOKMARK_CHANGE;
+						msg.arg1 = station.getStation().getId();
+						if (station.getStation().isBookmarked())
+							msg.arg2 = 1;
+						else
+							msg.arg2 = 0;
+						handler.sendMessage(msg);
+					}});			
+				
+			}
+			
 		}
-		
+
 	}
 
 	public boolean isPopulated() {
@@ -211,8 +255,146 @@ public class InfoLayer extends LinearLayout {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		return super.onTouchEvent(event);
+		if (vf != null && flingTooltip != null){
+			int action = event.getAction();
+			int direction;
+			switch (action) {
+				case MotionEvent.ACTION_DOWN:
+					
+					if (event.getX() > getMeasuredWidth() / 2){
+						direction = 1;
+					} else {
+						direction = 0;
+					}
+					showFlingTooltip(direction);
+					break;
+				case MotionEvent.ACTION_UP:
+					if (lastDisplayedChild == vf.getDisplayedChild()){
+						if (event.getX() > getMeasuredWidth() / 2){
+							direction = 1;
+						} else {
+							direction = 0;
+						}
+					} else {
+						if (event.getX() > getMeasuredWidth() / 2){
+							direction = 0;
+						}else{
+							direction = 1;
+						}
+					}
+					hideFlingTooltip(direction);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+			}
+			lastDisplayedChild = vf.getDisplayedChild();
+		}
+		
+		return true;
+	}
+
+	private Animation inFromRightAnimation() {
+		Animation inFromRight = new TranslateAnimation(
+				Animation.RELATIVE_TO_PARENT, +1.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f);
+		inFromRight.setDuration(250);
+		inFromRight.setInterpolator(new AccelerateInterpolator());
+		return inFromRight;
+	}
+
+	private Animation outToLeftAnimation() {
+		Animation outtoLeft = new TranslateAnimation(
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, -1.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f);
+		outtoLeft.setDuration(250);
+		outtoLeft.setInterpolator(new AccelerateInterpolator());
+		return outtoLeft;
+	}
+
+	private Animation inFromLeftAnimation() {
+		Animation inFromLeft = new TranslateAnimation(
+				Animation.RELATIVE_TO_PARENT, -1.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f);
+		inFromLeft.setDuration(250);
+		inFromLeft.setInterpolator(new AccelerateInterpolator());
+		return inFromLeft;
+	}
+
+	private Animation outToRightAnimation() {
+		Animation outtoRight = new TranslateAnimation(
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, +1.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f,
+				Animation.RELATIVE_TO_PARENT, 0.0f);
+		outtoRight.setDuration(250);
+		outtoRight.setInterpolator(new AccelerateInterpolator());
+		return outtoRight;
+	}
+	
+	public void showFlingTooltip (int direction){
+		
+		Animation fadeInAnimation = AnimationUtils.loadAnimation(ctx, android.R.anim.fade_in);
+		fadeInAnimation.setDuration(500);
+		fadeInAnimation.setAnimationListener(new AnimationListener(){
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				flingTooltip.setVisibility(View.VISIBLE);
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		flingTooltip.setDirection(direction);
+		flingTooltip.setVisibility(View.VISIBLE);
+		flingTooltip.startAnimation(fadeInAnimation);
+
+	}
+	
+	public void hideFlingTooltip (int direction) {
+		Animation fadeOutAnimation = AnimationUtils.loadAnimation(ctx, android.R.anim.fade_out);
+		fadeOutAnimation.setDuration(500);
+		fadeOutAnimation.setAnimationListener(new AnimationListener(){
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				flingTooltip.setVisibility(View.INVISIBLE);
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		flingTooltip.setDirection(direction);
+		flingTooltip.startAnimation(fadeOutAnimation);
+		
 	}
 
 	class MyGestureDetector extends SimpleOnGestureListener {
@@ -221,16 +403,26 @@ public class InfoLayer extends LinearLayout {
 				float velocityY) {
 			try {
 				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) {
-					////Log.i("openBicing", "down?");
+					// //Log.i("CityBikes", "down?");
 					return false;
 				}
 				// right to left swipe
 				if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
 						&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					handler.sendEmptyMessage(NEXT_STATION);
+					Log.i("CityBikes", "Right to Left");
+					// Do thingy!!!!
+
+					vf.setInAnimation(inFromRightAnimation());
+					vf.setOutAnimation(outToLeftAnimation());
+					vf.showNext();
+
 				} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
 						&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					handler.sendEmptyMessage(PREV_STATION);
+					Log.i("CityBikes", "Left to Right");
+
+					vf.setInAnimation(inFromLeftAnimation());
+					vf.setOutAnimation(outToRightAnimation());
+					vf.showPrevious();
 				}
 			} catch (Exception e) {
 				// nothing
