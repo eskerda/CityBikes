@@ -128,7 +128,7 @@ public class StationOverlay extends Overlay {
 			} else if (station.getFree() > RED_STATE_MAX) {
 				this.status = YELLOW_STATE;
 				this.radiusInMeters = YELLOW_STATE_RADIUS;
-				this.currentPaint.setARGB(85, 255, 210, 72);
+				this.currentPaint.setARGB(85, 251,184,41);
 				this.currentBorderPaint.setARGB(100, 255, 210, 72);
 
 			} else {
@@ -150,7 +150,7 @@ public class StationOverlay extends Overlay {
 		} else if (station.getBikes() > RED_STATE_MAX) {
 			this.status = YELLOW_STATE;
 			this.radiusInMeters = YELLOW_STATE_RADIUS;
-			this.currentPaint.setARGB(85, 255, 210, 72);
+			this.currentPaint.setARGB(85, 251,184,41);
 			this.currentBorderPaint.setARGB(100, 255, 210, 72);
 
 		} else {

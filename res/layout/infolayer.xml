@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/linearLayout1"
-	android:layout_width="fill_parent" android:layout_height="wrap_content"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+<FrameLayout android:id="@+id/frameLayout1"
+	android:layout_width="fill_parent" android:layout_height="50dip"
+	xmlns:android="http://schemas.android.com/apk/res/android">	
 	<ViewFlipper android:id="@+id/stationViewFlipper"
 		android:layout_width="fill_parent" android:layout_height="wrap_content">
 	<include android:id="@+id/include1" android:layout_width="fill_parent"
@@ -9,5 +9,9 @@
 	<include android:id="@+id/include2" android:layout_width="fill_parent"
 		layout="@layout/bookmark_item" android:layout_height="wrap_content"></include>
 		</ViewFlipper>
-</LinearLayout>
+	<net.homelinux.penecoptero.android.citybikes.view.FlingTooltip
+		android:id="@+id/FlingTooltip" android:layout_height="fill_parent"
+		android:layout_width="fill_parent">
+	</net.homelinux.penecoptero.android.citybikes.view.FlingTooltip>		
+</FrameLayout>
 
