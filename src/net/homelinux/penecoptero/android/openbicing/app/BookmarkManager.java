@@ -1,4 +1,4 @@
-package net.homelinux.penecoptero.android.openvelib.app;
+package net.homelinux.penecoptero.android.openbicing.app;
 
 
 import org.json.JSONArray;
@@ -21,8 +21,8 @@ public class BookmarkManager {
 	private JSONArray stations;
 	
 	public BookmarkManager(Context ctx) throws Exception{
-		settings = ctx.getSharedPreferences(OpenVelib.PREFERENCES_NAME,0);
-		netnick = "velib";
+		settings = ctx.getSharedPreferences(OpenBicing.PREFERENCES_NAME,0);
+		netnick = "bicing";
 		load();
 	}
 	

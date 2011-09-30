@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.openvelib.app;
+package net.homelinux.penecoptero.android.openbicing.app;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,7 +36,7 @@ public class SettingsActivity extends PreferenceActivity implements
 		super.onCreate(savedInstanceState);
 
 		getPreferenceManager().setSharedPreferencesName(
-				OpenVelib.PREFERENCES_NAME);
+				OpenBicing.PREFERENCES_NAME);
 		addPreferencesFromResource(R.xml.preferences);
 
 		psLocation = (PreferenceScreen) this.findPreference("openvelib.preferences_location");		

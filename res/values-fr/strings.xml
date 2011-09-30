@@ -15,7 +15,7 @@
  * limitations under the License.
  */ -->
 <resources>
-    <string name="app_name">openVelib</string>
+    <string name="app_name">Open Bicing</string>
     <string name="menu_sync">Sync</string>
     <string name="menu_location">Ma position</string>
     <string name="menu_view_all">Tout voir</string>

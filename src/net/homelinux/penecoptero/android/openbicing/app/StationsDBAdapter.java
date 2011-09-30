@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.openvelib.app;
+package net.homelinux.penecoptero.android.openbicing.app;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import net.homelinux.penecoptero.android.openvelib.utils.CircleHelper;
+import net.homelinux.penecoptero.android.openbicing.utils.CircleHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,7 +44,7 @@ public class StationsDBAdapter implements Runnable {
 	public static final String CENTER_LNG_KEY = "sCenterLng";
 	public static final String RADIUS_KEY = "sRadius";
 	public static final String VIEW_ALL_KEY = "sViewAll";
-	public static final String PREF_NAME = "openvelib";
+	public static final String PREF_NAME = "openbicing";
 	
 
 	public static final int FETCH = 0;
@@ -53,7 +53,7 @@ public class StationsDBAdapter implements Runnable {
 	public static final int UPDATE_DATABASE = 3;
 	public static final int NETWORK_ERROR = 4;
 	public static final String TIMESTAMP_FORMAT = "HH:mm:ss dd/MM/yyyy";
-	public static final String VELIB_URL = "http://api.citybik.es/velib.json";
+	public static final String BICING_URL = "http://api.citybik.es/bicing.json";
 
 	private StationOverlayList stationsDisplayList;
 
@@ -274,7 +274,6 @@ public class StationsDBAdapter implements Runnable {
 		RAWstations = settings.getString("stations", "[]");
 		last_updated = settings.getString("last_updated", null);
 		last_updated_time = settings.getLong("last_updated_time", 0);
-		String network_url = settings.getString("network_url", "");
 	}
 
 	public void sync(boolean all, Bundle data) throws Exception {
@@ -335,7 +334,7 @@ public class StationsDBAdapter implements Runnable {
 			case FETCH:
 				try {
 					SharedPreferences settings = this.mCtx.getSharedPreferences(PREF_NAME,0);
-					String network_url = VELIB_URL;
+					String network_url = BICING_URL;
 					RAWstations = fetchStations(network_url);
 					SimpleDateFormat sdf = new SimpleDateFormat(
 							TIMESTAMP_FORMAT);

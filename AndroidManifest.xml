@@ -18,7 +18,7 @@
  -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="net.homelinux.penecoptero.android.openvelib.app" android:versionName="1.4 Bookmarks" android:versionCode="7">
+      package="net.homelinux.penecoptero.android.openbicing.app" android:versionName="1.6 Bookmarks" android:versionCode="10">
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
     	<uses-library android:name="com.google.android.maps" />
 			<activity android:name=".MainActivity" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
@@ -27,7 +27,7 @@
 	                <category android:name="android.intent.category.LAUNCHER" />
 	            </intent-filter>
 	        </activity>
-	        <activity android:name=".SettingsActivity" android:theme="@android:style/Theme.NoTitleBar"></activity>
+	        <activity android:name="net.homelinux.penecoptero.android.openbicing.app.SettingsActivity" android:theme="@android:style/Theme.NoTitleBar"></activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.openvelib.app;
+package net.homelinux.penecoptero.android.openbicing.app;
 
 import java.util.Calendar;
 import java.util.List;
 
-import net.homelinux.penecoptero.android.openvelib.utils.CircleHelper;
+import net.homelinux.penecoptero.android.openbicing.utils.CircleHelper;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -101,7 +101,7 @@ public class MainActivity extends MapActivity {
 					infoLayer.inflateStation(stations.getCurrent());
 					
 				}
-				if (msg.what == OpenVelib.BOOKMARK_CHANGE){
+				if (msg.what == OpenBicing.BOOKMARK_CHANGE){
 					int id = msg.arg1;
 					boolean bookmarked;
 					if (msg.arg2 == 0){
@@ -150,7 +150,7 @@ public class MainActivity extends MapActivity {
 		
 		applyMapViewLongPressListener(mapView);
 		
-		settings = getSharedPreferences(OpenVelib.PREFERENCES_NAME,0);
+		settings = getSharedPreferences(OpenBicing.PREFERENCES_NAME,0);
 		
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		
@@ -347,9 +347,9 @@ public class MainActivity extends MapActivity {
 			if (!all) {
 				GeoPoint center = locator.getCurrentGeoPoint();
 				if (center == null){
-						// Paris lat/lng 48.857, 2.353
-						double lat = 48.857;
-						double lng = 2.353;
+						// Barcelona lat/lng 41.3880, 2.1700
+						double lat = 41.3880;
+						double lng = 2.1700;
 						Location fallback = new Location("fallback");
 						fallback.setLatitude(lat);
 						fallback.setLongitude(lng);

@@ -1,6 +1,6 @@
-package net.homelinux.penecoptero.android.openvelib.view;
+package net.homelinux.penecoptero.android.openbicing.view;
 
-import net.homelinux.penecoptero.android.openvelib.utils.CircleHelper;
+import net.homelinux.penecoptero.android.openbicing.utils.CircleHelper;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

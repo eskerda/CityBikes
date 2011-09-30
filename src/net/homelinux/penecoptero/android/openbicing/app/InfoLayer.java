@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.openvelib.app;
+package net.homelinux.penecoptero.android.openbicing.app;
 
-import net.homelinux.penecoptero.android.openvelib.view.FlingTooltip;
+import net.homelinux.penecoptero.android.openbicing.view.FlingTooltip;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -105,13 +105,13 @@ public class InfoLayer extends LinearLayout {
 		}
 	}
 	private boolean isFirstTime(){
-		SharedPreferences settings = ctx.getSharedPreferences(OpenVelib.PREFERENCES_NAME,0);
+		SharedPreferences settings = ctx.getSharedPreferences(OpenBicing.PREFERENCES_NAME,0);
 		boolean firstTime = settings.getBoolean("first_time", true);
 		return firstTime;
 	}
 
 	private void saveFirstTime(){
-		SharedPreferences settings = ctx.getSharedPreferences(OpenVelib.PREFERENCES_NAME,0);
+		SharedPreferences settings = ctx.getSharedPreferences(OpenBicing.PREFERENCES_NAME,0);
 		Editor editor = settings.edit();
 		editor.putBoolean("first_time", false);
 		editor.commit();
@@ -187,7 +187,7 @@ public class InfoLayer extends LinearLayout {
 						// TODO Auto-generated method stub
 						station.getStation().setBookmarked(!station.getStation().isBookmarked());
 						Message msg = new Message();
-						msg.what = OpenVelib.BOOKMARK_CHANGE;
+						msg.what = OpenBicing.BOOKMARK_CHANGE;
 						msg.arg1 = station.getStation().getId();
 						if (station.getStation().isBookmarked())
 							msg.arg2 = 1;

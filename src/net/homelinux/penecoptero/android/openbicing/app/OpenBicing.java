@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.openvelib.app;
+package net.homelinux.penecoptero.android.openbicing.app;
 
-public class OpenVelib {
-	public static final String PREFERENCES_NAME = "openvelib";
+public class OpenBicing {
+	public static final String PREFERENCES_NAME = "openbicing";
 	public static final int BOOKMARK_CHANGE = 42;
 }

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.openvelib.utils;
-
-import android.util.Log;
+package net.homelinux.penecoptero.android.openbicing.utils;
 
 import com.google.android.maps.GeoPoint;
 
