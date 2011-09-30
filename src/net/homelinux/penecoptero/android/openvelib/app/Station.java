@@ -1,6 +1,7 @@
 package net.homelinux.penecoptero.android.openvelib.app;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 
@@ -10,6 +11,7 @@ public class Station {
 	private String timestamp;
 	private String name;
 	private int id;
+	private boolean bookmarked = false;
 
 	private String distanceText = "";
 	private String walkingText = "";
@@ -30,9 +32,22 @@ public class Station {
 		this.context = context;
 		this.point = center;
 	}
-
+	
+	public int getHash(){
+		String notHash = Integer.toString(this.point.getLatitudeE6())+","+Integer.toString(this.point.getLongitudeE6());
+		return notHash.hashCode();
+	}
+	
 	public int getId(){
 		return id;
+	}
+	
+	public boolean isBookmarked(){
+		return bookmarked;
+	}
+	
+	public void setBookmarked( boolean book ){
+		bookmarked = book;
 	}
 	
 	public String getName(){

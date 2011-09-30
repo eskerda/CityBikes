@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="utf-8"?>
+<!-- /*
  * Copyright (C) 2010 Lluís Esquerda
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-package net.homelinux.penecoptero.android.openvelib.app;
-
-public class OpenVelib {
-	public static final String PREFERENCES_NAME = "openvelib";
-	public static final int BOOKMARK_CHANGE = 42;
-}
+ */ -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient android:startColor="#C85A5A5A" android:endColor="#C8292929"
+            android:angle="270"/>
+</shape>

@@ -55,6 +55,7 @@
 				android:paddingLeft="5dip" android:paddingBottom="5dip"
 				android:background="@drawable/fancy_gradient" android:paddingRight="5dip">
 			</net.homelinux.penecoptero.android.openvelib.app.InfoLayer>
+
 		</LinearLayout>
 	</LinearLayout>
 	<ToggleButton android:id="@+id/mode_button"

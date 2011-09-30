@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 This is a version that only works on Paris.
 
 With its name, openVelib, it gets better visibility inside Android Market
@@ -8,3 +9,8 @@ now is not an option. At some point, a transaction popup (openVelib -> CityBikes
 I am moving openVelib to the codebase of CityBikes, to keep updates easy
 
 Haters Gonna Hate!
+=======
+This is the main version of CityBikes
+
+Other projects (as openBicing, openVelib, hang and should be updated from here, somehow, will have to ask the git wizards for info)
+>>>>>>> master

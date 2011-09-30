@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,7 +60,8 @@ public class MainActivity extends MapActivity {
 	public static final int KEY_LAT = 0;
 	public static final int KEY_LNG = 1;
 	public static final int SETTINGS_ACTIVITY = 0;
-
+	
+	
 	private StationOverlayList stations;
 	private StationsDBAdapter mDbHelper;
 	private InfoLayer infoLayer;
@@ -90,7 +92,6 @@ public class MainActivity extends MapActivity {
 		mapView = (MapView) findViewById(R.id.mapview);
 		mSlidingDrawer = (StationSlidingDrawer) findViewById(R.id.drawer);
 		infoLayer = (InfoLayer) findViewById(R.id.info_layer);
-		
 		scale = getResources().getDisplayMetrics().density;
 		//Log.i("CityBikes","ON CREATEEEEEEEEE!!!!!");
 		infoLayerPopulator = new Handler() {
@@ -98,10 +99,34 @@ public class MainActivity extends MapActivity {
 			public void handleMessage(Message msg) {
 				if (msg.what == InfoLayer.POPULATE) {
 					infoLayer.inflateStation(stations.getCurrent());
+					
+				}
+				if (msg.what == OpenVelib.BOOKMARK_CHANGE){
+					int id = msg.arg1;
+					boolean bookmarked;
+					if (msg.arg2 == 0){
+						bookmarked = false;
+					} else{
+						bookmarked = true;
+					}
+					StationOverlay station = stations.getById(id);
+					try{
+						BookmarkManager bm = new BookmarkManager(getApplicationContext());
+						bm.setBookmarked(station.getStation(), !bookmarked);
+					}catch (Exception e){
+						Log.i("CityBikes","Error bookmarking station");
+						e.printStackTrace();
+					}
+					
+					if (!view_all) {
+						view_near();
+					}
+					mapView.postInvalidate();
 				}
 			}
 		};
-
+		
+		infoLayer.setHandler(infoLayerPopulator);
 		RelativeLayout.LayoutParams zoomControlsLayoutParams = new RelativeLayout.LayoutParams(
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -219,7 +244,7 @@ public class MainActivity extends MapActivity {
 					////Log.i("openBicing", "Network error, last update from " + mDbHelper.getLastUpdated());
 					Toast toast = Toast.makeText(getApplicationContext(),
 							getString(R.string.network_error)
-									+ mDbHelper.getLastUpdated(),
+									+ " " + mDbHelper.getLastUpdated(),
 							Toast.LENGTH_LONG);
 					toast.show();
 					break;
@@ -357,6 +382,13 @@ public class MainActivity extends MapActivity {
 		this.populateList(this.view_all);
 		infoLayer.update();
 		mapView.invalidate();
+		Toast toast;
+		if (getBike){
+			toast = Toast.makeText(getApplicationContext(),getString(R.string.get_bike_mode),Toast.LENGTH_SHORT);
+		} else {
+			toast = Toast.makeText(getApplicationContext(),getString(R.string.park_bike_mode),Toast.LENGTH_SHORT);
+		}
+		toast.show();
 	}
 
 	@Override

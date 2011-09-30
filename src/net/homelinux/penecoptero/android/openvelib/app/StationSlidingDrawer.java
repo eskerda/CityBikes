@@ -1,5 +1,21 @@
-package net.homelinux.penecoptero.android.openvelib.app;
 
+/*
+ * Copyright (C) 2010 Lluís Esquerda
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.homelinux.penecoptero.android.openvelib.app;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +44,8 @@ public class StationSlidingDrawer extends SlidingDrawer {
 	private List <StationOverlay> stations;
 	private ListView listView;
 	private FrameLayout frameLayout;
-	
+
+	private int black;
 	private int green;
 	private int yellow;
 	private int red;
@@ -70,6 +87,7 @@ public class StationSlidingDrawer extends SlidingDrawer {
 	}
 
 	public void initVars(){
+		black = R.drawable.black_gradient;
 		green = R.drawable.green_gradient;
 		yellow = R.drawable.yellow_gradient;
 		red = R.drawable.red_gradient;
@@ -157,6 +175,9 @@ public class StationSlidingDrawer extends SlidingDrawer {
 
 			int bg;
 			switch (tmp.getState()) {
+			case StationOverlay.BLACK_STATE:
+				bg = black;
+				break;
 			case StationOverlay.GREEN_STATE:
 				bg = green;
 				break;

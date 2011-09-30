@@ -78,6 +78,8 @@ public class StationsDBAdapter implements Runnable {
 	private long last_updated_time;
 
 	private GeoPoint center;
+	
+	private boolean getBike = true;
 
 	public StationsDBAdapter(Context ctx, MapView mapView, Handler handler,
 			StationOverlayList stationsDisplayList) {
@@ -85,7 +87,7 @@ public class StationsDBAdapter implements Runnable {
 		this.mapView = mapView;
 		this.handlerOut = handler;
 		this.stationsDisplayList = stationsDisplayList;
-
+		
 		this.mRESTHelper = new RESTHelper(false, null, null);
 
 		this.toDo = new LinkedList();
@@ -123,12 +125,12 @@ public class StationsDBAdapter implements Runnable {
 	}
 
 	public void buildMemory(JSONArray stations) throws Exception {
-		////Log.i("openBicing", "Building Memory without distances and order");
 		this.stationsMemoryMap = new LinkedList<StationOverlay>();
 		JSONObject station = null;
 		int lat, lng, bikes, free, id;
 		String timestamp, name;
 		GeoPoint point;
+		BookmarkManager bm = new BookmarkManager(mCtx);
 		for (int i = 0; i < stations.length(); i++) {
 			station = stations.getJSONObject(i);
 			id = station.getInt("id");
@@ -141,7 +143,11 @@ public class StationsDBAdapter implements Runnable {
 
 			point = new GeoPoint(lat, lng);
 			Station stat = new Station(id, name, bikes, free, timestamp, mCtx, point);
-			StationOverlay memoryStation = new StationOverlay(stat);
+
+			if (bm.isBookmarked(stat))
+				stat.setBookmarked(true);
+			
+			StationOverlay memoryStation = new StationOverlay(stat, getBike);
 			stationsMemoryMap.add(memoryStation);
 		}
 	}
@@ -156,7 +162,10 @@ public class StationsDBAdapter implements Runnable {
 		Iterator<StationOverlay> i = stationsMemoryMap.iterator();
 		while (i.hasNext()) {
 			tmp = i.next();
-			if ((tmp.getStation().getMetersDistance() + tmp.getStation().getMetersDistance() * 0.35) <= radius) {
+			if ((tmp.getStation().getMetersDistance() + tmp.getStation().getMetersDistance() * 0.35) <= radius
+			||
+			tmp.getStation().isBookmarked()
+			) {
 				res.add(tmp);
 			}
 		}
@@ -180,6 +189,7 @@ public class StationsDBAdapter implements Runnable {
 		int lat, lng, bikes, free, id;
 		String timestamp, name;
 		GeoPoint point;
+		BookmarkManager bm = new BookmarkManager(mCtx);
 		for (int i = 0; i < stations.length(); i++) {
 			station = stations.getJSONObject(i);
 			id = station.getInt("id");
@@ -191,7 +201,11 @@ public class StationsDBAdapter implements Runnable {
 			timestamp = station.getString("timestamp");
 			point = new GeoPoint(lat, lng);
 			Station stat = new Station(id, name, bikes, free, timestamp, mCtx, point);
-			StationOverlay memoryStation = new StationOverlay(stat);
+
+			if (bm.isBookmarked(stat))
+				stat.setBookmarked(true);
+			StationOverlay memoryStation = new StationOverlay(stat, getBike);
+
 			memoryStation.getStation().setMetersDistance(CircleHelper.gp2m(center, point));
 			memoryStation.getStation().populateStrings();
 			stationsMemoryMap.add(memoryStation);
@@ -218,7 +232,6 @@ public class StationsDBAdapter implements Runnable {
 				}
 			}
 		});
-		////Log.i("openBicing", "Building Memory with distances and order...");
 	}
 
 	public void reorder() {
@@ -261,6 +274,7 @@ public class StationsDBAdapter implements Runnable {
 		RAWstations = settings.getString("stations", "[]");
 		last_updated = settings.getString("last_updated", null);
 		last_updated_time = settings.getLong("last_updated_time", 0);
+		String network_url = settings.getString("network_url", "");
 	}
 
 	public void sync(boolean all, Bundle data) throws Exception {
@@ -291,7 +305,10 @@ public class StationsDBAdapter implements Runnable {
 		StationOverlay tmp;
 		while (i.hasNext()) {
 			tmp = i.next();
-			if ((tmp.getStation().getMetersDistance() + tmp.getStation().getMetersDistance() * 0.35) <= radius) {
+			if ((tmp.getStation().getMetersDistance() + tmp.getStation().getMetersDistance() * 0.35) <= radius
+			||
+			tmp.getStation().isBookmarked()
+			) {
 				stationsDisplayList.addStationOverlay(tmp);
 			}
 		}
@@ -299,6 +316,7 @@ public class StationsDBAdapter implements Runnable {
 	}
 
 	public void changeMode (boolean getBike){
+		this.getBike = getBike;
 		Iterator i = stationsMemoryMap.iterator();
 		while (i.hasNext()){
 			Object tmp = i.next();
