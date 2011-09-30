@@ -19,7 +19,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.homelinux.penecoptero.android.citybikes.app"
-      android:versionName="1.4 Bookmarks" android:versionCode="7">
+      android:versionName="1.4.1 Bookmarks" android:versionCode="8">
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
     	<uses-library android:name="com.google.android.maps" />
 			<activity android:name=".MainActivity" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
@@ -34,7 +34,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
     <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:anyDensity="true"/>
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4"/>
 </manifest> 
