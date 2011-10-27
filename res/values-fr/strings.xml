@@ -50,4 +50,6 @@
     <string name="automatic">Automatique</string>
     <string name="manual">Manuel</string>
     <string name="bike_network_alert_error_text">Ré-essayez ou sélectionnez manuellement depuis une liste</string>
+        <string name="fling_tooltip">Slide through the green arrow to reveal the bookmarks menu</string>
+    
 </resources>
