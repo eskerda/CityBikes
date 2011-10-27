@@ -38,6 +38,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
@@ -102,6 +103,8 @@ public class InfoLayer extends LinearLayout {
 		if (isFirstTime()){
 			if (vf!=null && flingTooltip != null){
 				flingTooltip.setVisibility(View.VISIBLE);
+				Toast toast = Toast.makeText(ctx,ctx.getString(R.string.fling_tooltip),Toast.LENGTH_LONG);
+				toast.show();
 			}
 		}
 	}

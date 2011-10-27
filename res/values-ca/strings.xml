@@ -1,50 +1,54 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!-- /*
- * Copyright (C) 2010 Lluís Esquerda
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */ -->
+* Copyright (C) 2010 Lluís Esquerda
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*
+http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/ -->
 <resources>
-    <string name="app_name">CityBikes</string>
-    <string name="menu_sync">Sincronitza</string>
-    <string name="menu_location">On sóc?</string>
-    <string name="menu_view_all">Veure tot</string>
-    <string name="menu_settings">Preferències</string>
-    <string name="menu_help">Ajuda</string>
-    <string name="no_bikes_around">No hi ha cap estació a la vora. Prova a canviar el tamany de la zona mostrada utilitzant el control blau o activa \"Veure tot\" al menú d\'opcions</string>
-    <string name="bikes">bicis</string>
-    <string name="free">espais</string>
-    <string name="network_error">Error de connexió</string>
-    <string name="loading">Descarregant bicicletes :D</string>
-    <string name="preferences_location">On sóc?</string>
-    <string name="preferences_location_title">Métode de localització</string>
-    <string name="preferences_location_summary">Activa o desactiva la localització per Xarxa o GPS</string>
-	<string name="preferences_cache_network_summary">Deixa l\'aplicació com recien instal·lada (manté els favorits)</string>
-    <string name="preferences_autofind_network_title">Sel·lecció automática de xarxa</string>
-    <string name="preferences_autofind_network_summary">Permetre autodetectar la xarxa basant-se en la teva posició actual</string>
-    <string name="preferences_cache_network_title">Buidar memoria cau</string>
-<string name="bike_network_alert_title">Sel·lecció de xarxa de bicicletes</string>
-    <string name="preferences_network">Xarxa de Bicicletes</string>
-    <string name="try_again">Torna-hi</string>
-    <string name="bike_network_alert_success_title">Xarxa trobada</string>
-    <string name="bike_network_alert_error_title">No s\'han trobat xarxes</string>
-    <string name="bike_network_alert_text">Puc trobar la xarxa per tu, basant-me en la teva posició\nO.. pots escollir la xarxa manualment d\'un llistat.\nQué vols fer?</string>
-    <string name="bike_network_alert_success_text1">Es correcte?</string>
-    <string name="bike_network_alert_success_text0">He detectat</string>
-    <string name="sure">Sí</string>
-    <string name="preferences_network_summary">Escull manualment d\'una llista de xarxes</string>
-    <string name="preferences_network_title">Sel·lecciona una xarxa de bicicletes</string>
-    <string name="automatic">Automàgic</string>
-    <string name="manual">Manual</string>
-    <string name="bike_network_alert_error_text">Torna-ho a provar, o sel·lecciona una xarxa manualment del llistat</string>
+	<string name="app_name">CityBikes</string>
+	<string name="menu_sync">Sincronitza</string>
+	<string name="menu_location">On sóc?</string>
+	<string name="menu_view_all">Veure-ho tot</string>
+	<string name="menu_settings">Preferències</string>
+	<string name="menu_help">Ajuda</string>
+	<string name="no_bikes_around">No hi ha cap estació a la vora. Prova a canviar la grandària de la zona mostrada utilitzant el control blau o activa \"Veure-ho tot\" al menú d\'opcions</string>
+	<string name="bikes">bicis</string>
+	<string name="free">espais</string>
+	<string name="network_error">Error de connexió</string>
+	<string name="loading">Descarregant bicicletes :D</string>
+	<string name="preferences_location">On sóc?</string>
+	<string name="preferences_location_title">Mètode de localització</string>
+	<string name="preferences_location_summary">Activa o desactiva la localització per Xarxa o GPS</string>
+	<string name="preferences_cache_network_summary">Deixa l\'aplicació com acabada d\'instal·lar (mantens els preferits)</string>
+	<string name="preferences_autofind_network_title">Selecció automàtica de xarxa</string>
+	<string name="preferences_autofind_network_summary">Permet autodetectar la xarxa basant-se en la teva posició actual</string>
+	<string name="preferences_cache_network_title">Buida la memòria cau</string>
+	<string name="bike_network_alert_title">Selecció de xarxa de bicicletes</string>
+	<string name="preferences_network">Xarxa de Bicicletes</string>
+	<string name="try_again">Torna-hi</string>
+	<string name="bike_network_alert_success_title">Xarxa trobada</string>
+	<string name="bike_network_alert_error_title">No s\'han trobat xarxes</string>
+	<string name="bike_network_alert_text">Puc trobar la xarxa per tu, basant-me en la teva posició\nO.. pots triar la xarxa manualment d\'un llistat.\nQuè vols fer?</string>
+	<string name="bike_network_alert_success_text1">És correcte?</string>
+	<string name="bike_network_alert_success_text0">He detectat</string>
+	<string name="sure">Sí</string>
+	<string name="preferences_network_summary">Tria manualment d\'una llista de xarxes</string>
+	<string name="preferences_network_title">Selecciona una xarxa de bicicletes</string>
+	<string name="automatic">Automàtic</string>
+	<string name="manual">Manual</string>
+	<string name="bike_network_alert_error_text">Torna-ho a provar o selecciona una xarxa manualment del llistat</string>
+	<string name="get_bike_mode">Troba una bicicleta</string>
+	<string name="park_bike_mode">Deixa una bicicleta</string>
+	<string name="fling_tooltip">Fes lliscar el dit per la fletxa verda per mostrar el menú de favorits</string>
 </resources>
