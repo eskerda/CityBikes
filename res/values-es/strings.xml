@@ -50,4 +50,8 @@
     <string name="automatic">Automàgico</string>
     <string name="manual">Manual</string>
     <string name="bike_network_alert_error_text">Vuelve a probarlo, o selecciona una red manualmente del listado</string>
+	<string name="get_bike_mode">Encuentra una bicicleta</string>
+	<string name="park_bike_mode">Deja una bicicleta</string>
+	    <string name="fling_tooltip">Arrastra el dedo por la flecha verde para mostrar el menú de favoritos</string>
+	
 </resources>

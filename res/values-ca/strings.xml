@@ -31,4 +31,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 <string name="preferences_location_title">Mètode de localització</string>
 <string name="preferences_location_summary">Activa o desactiva la localització per Xarxa o GPS</string>
 <string name="sure">Sí</string>
+<string name="get_bike_mode">Troba una bicicleta</string>
+<string name="park_bike_mode">Deixa una bicicleta</string>
+<string name="fling_tooltip">Fes lliscar el dit per la fletxa verda per mostrar el menú de favorits</string>
 </resources>

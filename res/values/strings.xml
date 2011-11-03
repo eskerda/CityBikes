@@ -52,4 +52,5 @@
     <string name="automatic">Automatic</string>
     <string name="get_bike_mode">Find a bike</string>
     <string name="park_bike_mode">Find a parking</string>
+    <string name="fling_tooltip">Slide through the green arrow to reveal the bookmarks menu</string>
 </resources>
