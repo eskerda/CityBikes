@@ -1,7 +1,6 @@
-package net.homelinux.penecoptero.android.citybikes.app;
+package net.homelinux.penecoptero.android.citybikes.donation.app;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 

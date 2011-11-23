@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.citybikes.app;
+package net.homelinux.penecoptero.android.citybikes.donation.app;
 
 import java.util.Calendar;
 import java.util.List;
 
 import net.homelinux.penecoptero.android.citybikes.utils.CircleHelper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
