@@ -1,0 +1,8 @@
+
+<LinearLayout android:id="@+id/linearLayout1"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<ToggleButton android:textOn="" android:textOff="" android:layout_height="48dip" android:background="@drawable/star" android:layout_marginLeft="10dip" android:id="@+id/bookmark_station" android:layout_width="48dip"></ToggleButton>
+	<Button android:text="Alarm Push" android:layout_width="100dip" android:layout_height="48dip"  android:layout_marginLeft="10dip" android:id="@+id/alarm_station"></Button>
+	<Button android:text="Alarm Pop" android:layout_width="100dip" android:layout_height="48dip"  android:layout_marginLeft="10dip" android:id="@+id/unalarm_station"></Button>
+</LinearLayout>

@@ -16,15 +16,21 @@
 
 package net.homelinux.penecoptero.android.citybikes.donation.app;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.homelinux.penecoptero.android.citybikes.view.FlingTooltip;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings.Secure;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
@@ -35,6 +41,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +69,7 @@ public class InfoLayer extends LinearLayout {
 	
 	private FlingTooltip flingTooltip;
 	private Handler handler;
-	private Drawable oldBackground;
+	
 	private ViewFlipper vf;
 
 	private LayoutInflater inflater;
@@ -76,9 +83,10 @@ public class InfoLayer extends LinearLayout {
 	public static final int POPULATE = 202;
 	
 	private ToggleButton bookmarkButton;
-
+	private Button alarmButton;
+	private Button unalarmButton;
 	private boolean populated = false;
-	
+	private RESTHelper rHelper;
 	private int lastDisplayedChild = -1;
 
 
@@ -137,7 +145,7 @@ public class InfoLayer extends LinearLayout {
 		red = R.drawable.alpha_red_gradient;
 		inflater = (LayoutInflater) ctx
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
+		rHelper = new RESTHelper(false, "foo","bar");
 	}
 
 	public void inflateStation(StationOverlay tmp) {
@@ -178,6 +186,9 @@ public class InfoLayer extends LinearLayout {
 			populated = true;
 			vf = (ViewFlipper) findViewById(R.id.stationViewFlipper);
 			bookmarkButton = (ToggleButton) findViewById(R.id.bookmark_station);
+			alarmButton = (Button) findViewById(R.id.alarm_station);
+			unalarmButton = (Button) findViewById(R.id.unalarm_station);
+			
 			flingTooltip = (FlingTooltip) findViewById(R.id.FlingTooltip);
 			flingTooltip.setVisibility(View.INVISIBLE);
 			
@@ -199,6 +210,39 @@ public class InfoLayer extends LinearLayout {
 						handler.sendMessage(msg);
 					}});			
 				
+			}
+			
+			if (alarmButton != null){
+				alarmButton.setOnClickListener(new OnClickListener(){
+					public void onClick(View v){
+						Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
+						registrationIntent.putExtra("app", PendingIntent.getBroadcast(ctx, 0, new Intent(), 0)); // boilerplate
+						registrationIntent.putExtra("sender", "push@citybik.es");
+						ctx.startService(registrationIntent);
+						String deviceId = Secure.getString(ctx.getContentResolver(),
+								Secure.ANDROID_ID);
+						Map<String, String> data = new HashMap<String, String>();
+						data.put("devId", deviceId);
+						data.put("station_id",Integer.toString(station.getStation().getId()));
+						data.put("action","callStation");
+						try{
+							Log.i("C2DM","Sending station to laika");
+						rHelper.restPOST("http://laika.citybik.es:8181",data);
+						}catch (Exception e){
+							Log.i("C2DM","Error sending station to laika");
+						}
+					}
+				});
+			}
+			
+			if (unalarmButton != null){
+				unalarmButton.setOnClickListener(new OnClickListener(){
+					public void onClick(View v){
+						Intent unregIntent = new Intent("com.google.android.c2dm.intent.UNREGISTER");
+						unregIntent.putExtra("app", PendingIntent.getBroadcast(ctx, 0, new Intent(), 0));
+						ctx.startService(unregIntent);
+					}
+				});
 			}
 			checkFirstTime();
 			
