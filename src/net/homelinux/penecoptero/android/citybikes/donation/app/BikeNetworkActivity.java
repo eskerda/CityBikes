@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class BikeNetworkActivity extends ListActivity {
 
@@ -79,11 +81,11 @@ public class BikeNetworkActivity extends ListActivity {
 				try{
 					JSONObject network = (JSONObject) getItem(position);
 					TextView tvName = (TextView) row.findViewById(R.id.network_list_item_name);
-					tvName.setText("("+network.getString("city")+") "+network.getString("name"));
+					tvName.setText(network.getString("name"));
 					row.setId(network.getInt("id"));
 					if (network_id!=-1){
 						if (network.getInt("id")==network_id){
-							row.setBackgroundResource(R.drawable.green_gradient);
+							//row.setBackgroundResource(R.drawable.green_gradient);
 							lastSelected = row;
 						}
 					}
@@ -106,10 +108,10 @@ public class BikeNetworkActivity extends ListActivity {
 	        //Log.i("CityBikes",Integer.toString(v.getId()));
 	        try{
 	        	nDBAdapter.setManualNetwork(v.getId());
-	        	if (lastSelected!=null)
-	        		lastSelected.setBackgroundColor(Color.BLACK);
-	        	v.setBackgroundResource(R.drawable.green_gradient);
 	        	lastSelected = v;
+	        	String netname = nDBAdapter.getStored().getJSONObject(v.getId()).getString("name");
+	        	CityBikes.showCustomToast(this, this, "Network Selected\n\n"+netname, Toast.LENGTH_SHORT);
+	        	finish();
 	        }catch (Exception e){
 	        	e.printStackTrace();
 	        }

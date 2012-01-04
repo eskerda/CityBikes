@@ -19,8 +19,11 @@
 				android:orientation="horizontal"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 >
-				<TextView android:text="Dunnow Network" android:id="@+id/network_list_item_name" android:gravity="center"
-								android:layout_width="wrap_content" android:layout_height="fill_parent" 
-								android:textAppearance="?android:attr/textAppearanceLarge"
+				<TextView android:text="Dunnow Network" android:id="@+id/network_list_item_name"
+								android:gravity="center"
+								android:layout_width="fill_parent" android:layout_height="fill_parent" 
+								android:textSize="25dip"
+								android:padding="10dip"
+								android:layout_gravity="center"
 								/>
 </LinearLayout>
