@@ -1,4 +1,4 @@
-package net.homelinux.penecoptero.android.citybikes.donation.app;
+package net.homelinux.penecoptero.android.citybikes.app;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,11 +6,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;

@@ -1,4 +1,4 @@
-package net.homelinux.penecoptero.android.citybikes.donation.app;
+package net.homelinux.penecoptero.android.citybikes.app;
 
 import org.json.JSONArray;
 import org.json.JSONException;

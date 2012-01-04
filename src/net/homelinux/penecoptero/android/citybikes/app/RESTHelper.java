@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.citybikes.donation.app;
+package net.homelinux.penecoptero.android.citybikes.app;
 
 import java.io.BufferedReader;
 import java.io.IOException;

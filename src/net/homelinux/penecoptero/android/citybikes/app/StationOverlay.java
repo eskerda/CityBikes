@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.homelinux.penecoptero.android.citybikes.donation.app;
+package net.homelinux.penecoptero.android.citybikes.app;
 
 import net.homelinux.penecoptero.android.citybikes.utils.CircleHelper;
 import android.graphics.Canvas;

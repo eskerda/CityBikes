@@ -3,11 +3,12 @@ package net.homelinux.penecoptero.android.citybikes.receivers;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.homelinux.penecoptero.android.citybikes.app.MainActivity;
+import net.homelinux.penecoptero.android.citybikes.app.R;
+import net.homelinux.penecoptero.android.citybikes.app.RESTHelper;
+
 import org.json.JSONObject;
 
-import net.homelinux.penecoptero.android.citybikes.donation.app.MainActivity;
-import net.homelinux.penecoptero.android.citybikes.donation.app.R;
-import net.homelinux.penecoptero.android.citybikes.donation.app.RESTHelper;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;

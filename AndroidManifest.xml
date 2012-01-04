@@ -9,7 +9,7 @@
 	governing permissions and * limitations under the License. */ -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="net.homelinux.penecoptero.android.citybikes.donation.app"
+	package="net.homelinux.penecoptero.android.citybikes.app"
 	android:versionName="1.4.4 Pushie" android:versionCode="11">
 	
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -17,9 +17,9 @@
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<permission
-		android:name="net.homelinux.penecoptero.android.citybikes.donation.app.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+		android:name="net.homelinux.penecoptero.android.citybikes.app.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 		<uses-permission
-	android:name="net.homelinux.penecoptero.android.citybikes.donation.app.permission.C2D_MESSAGE" />
+	android:name="net.homelinux.penecoptero.android.citybikes.app.permission.C2D_MESSAGE" />
 	
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 	
@@ -37,7 +37,7 @@
 		<activity android:name=".SettingsActivity" android:theme="@android:style/Theme.NoTitleBar"></activity>
 		<activity android:name=".PushActivity" android:theme="@android:style/Theme.Dialog" ></activity>
 		<activity
-			android:name="net.homelinux.penecoptero.android.citybikes.donation.app.BikeNetworkActivity"
+			android:name="net.homelinux.penecoptero.android.citybikes.app.BikeNetworkActivity"
 			android:theme="@android:style/Theme.NoTitleBar"></activity>
 
 		<receiver android:name="net.homelinux.penecoptero.android.citybikes.receivers.C2DMReceiver"
@@ -45,12 +45,12 @@
 			<!-- Receive the actual message -->
 			<intent-filter>
 				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-				<category android:name="net.homelinux.penecoptero.android.citybikes.donation.app" />
+				<category android:name="net.homelinux.penecoptero.android.citybikes.app" />
 			</intent-filter>
 			<!-- Receive the registration id -->
 			<intent-filter>
 				<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-				<category android:name="net.homelinux.penecoptero.android.citybikes.donation.app" />
+				<category android:name="net.homelinux.penecoptero.android.citybikes.app" />
 			</intent-filter>
 		</receiver>
 		
