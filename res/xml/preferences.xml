@@ -42,4 +42,17 @@
             android:summary="@string/preferences_cache_network_summary">
         	</PreferenceScreen>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/help">
+        	<!-- <PreferenceScreen
+            android:key="citybikes.preferences_tour"
+            android:title="@string/preferences_tour_title"
+            android:summary="@string/preferences_tour_summary">
+        	</PreferenceScreen>-->
+            <PreferenceScreen
+            android:key="citybikes.preferences_c2dm_tour"
+            android:title="@string/preferences_c2dm_tour_title"
+            android:summary="@string/preferences_c2dm_tour_summary">
+        	</PreferenceScreen>
+    </PreferenceCategory>
 </PreferenceScreen>

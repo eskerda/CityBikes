@@ -53,4 +53,20 @@
     <string name="get_bike_mode">Find a bike</string>
     <string name="park_bike_mode">Find a parking</string>
     <string name="fling_tooltip">Slide through the green arrow to reveal the bookmarks menu</string>
+    <string name="c2dm_new_feature">With this version there\'s a new feature I would like to show you..\nIt consists on getting a notification when an empty station has a bike ready for you.\nI know this app is not always easy to use, so I have made a tour just for you. You can always redo the tour through the settings menu.\n\nSo, would you like to see how it works?</string>
+    <string name="c2dm_new_feature_idea">If you selected an station which already had bikes, you have probably received a notification by now!\n\nAssume you don\'t mind waiting for an station to have a bike for you. You might be on a cafe, or chatting with a friend. Using this, you don\'t need to be continuously checking for the status on that station, just wait for CityBikes to notify you through Google\'s awesome C2DM service, even if the application is closed!\nYou can add as many alarms as you want. When you receive a notification, all other alarms will be automatically cleared.\n\nThis is an EXPERIMENTAL alpha feature.\n\nIf you want to provide any feedback, contact me on twitter @ctbikes or through email.\n\nThanks for taking this tour, and have a great time!</string>
+    <string name="new_feature">There\'s a new feature!</string>
+    <string name="about_this_feature">About this feature</string>
+    <string name="nope">Nope</string>
+    <string name="c2dm_tour_doing_great">You are doing great! Click on that alarm icon, next to the star</string>
+    <string name="c2dm_tour_start">First, select a station. To test it fast, just select any station with available bikes</string>
+    <string name="c2dm_tour_green_arrow">Now, reveal the contextual menu by sliding across the green arrow in any direction</string>
+    <string name="preferences_c2dm_tour_title">CityBikes Notifications Tour</string>
+    <string name="preferences_c2dm_tour_summary">Show CityBikes Notifications Tour the next time you use the app</string>
+    <string name="preferences_c2dm_tour_toast_ok">A help tour will be shown the next time you use this app</string>
+    <string name="preferences_c2dm_tour_toast_ko">CityBikes on your city does not yet support C2DM Notifications, but will do soon!</string>
+    <string name="preferences_tour_title">CityBikes Help Tour</string>
+    <string name="preferences_tour_summary">Show CityBikes Help Tour the next time you use the app</string>
+    <string name="help">Help</string>
+    <string name="c2dm_added">You will be notified when there are ready bikes on this station!</string>
 </resources>

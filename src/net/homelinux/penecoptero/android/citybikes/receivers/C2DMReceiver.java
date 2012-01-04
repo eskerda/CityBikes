@@ -59,45 +59,35 @@ public class C2DMReceiver extends BroadcastReceiver {
 				String ns = Context.NOTIFICATION_SERVICE;
 				NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
 				String stationName;
+				int stationId = -1;
 				try{
 					JSONObject station = new JSONObject(payload);
 					stationName = station.getString("name");
+					stationId = station.getInt("id");
+					Log.i("C2DM","Station id is "+Integer.toString(stationId));
 				} catch (Exception e){
 					stationName = "error";
 				}
 				int icon = R.drawable.icon;
-				CharSequence tickerText = "Your bike @ "+stationName+"is ready!";
+				CharSequence tickerText = "Your bike @ "+stationName+" is ready!";
 				long when = System.currentTimeMillis();
 
 				Notification notification = new Notification(icon, tickerText, when);
 				notification.defaults |= Notification.DEFAULT_SOUND;
-				CharSequence contentTitle = "Yay!";
-				CharSequence contentText = "Your bike @ "+stationName+"is ready!";
+				CharSequence contentTitle = "CityBikes station ready!";
+				CharSequence contentText = "Your bike @ "+stationName+" is ready!";
 				Intent notificationIntent = new Intent(context, MainActivity.class);
-				PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-
-				notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-
-				mNotificationManager.notify(CITYBIKES_PUSH_ID, notification);
+				if (stationId != -1){
+					notificationIntent.putExtra("c2dm_station_id", stationId);
+					Log.i("C2DM","Putting extra to intent "+Integer.toString(stationId));
+				}
 				
-				/*Intent mIntent = new Intent();
-				mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);      
-				mIntent.setClass(context, PushActivity.class);
-				mIntent.putExtra("station", payload);
-				context.startActivity(mIntent);
-				/*try{
-					Log.i("C2DM", "trying to populate alert");
-					JSONObject station = new JSONObject(payload);
-					AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-					alertDialog.setIcon(android.R.drawable.ic_dialog_map);
-					alertDialog.setTitle("Bike ready!");
-					alertDialog.setMessage("Your bike @ "+station.getString("name")+"is ready");
-					alertDialog.show();
-				}catch (Exception e){
-					Log.i("C2DM", "error populating alert?");
-					e.printStackTrace();
-					
-				}*/
+				PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
+						PendingIntent.FLAG_ONE_SHOT
+				        + PendingIntent.FLAG_UPDATE_CURRENT);
+				notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+				notification.flags = Notification.FLAG_AUTO_CANCEL;
+				mNotificationManager.notify(CITYBIKES_PUSH_ID, notification);
 		}
 	}
 }

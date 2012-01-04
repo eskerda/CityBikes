@@ -16,6 +16,7 @@
 
 package net.homelinux.penecoptero.android.citybikes.donation.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,8 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.view.Gravity;
+import android.widget.Toast;
 
 public class SettingsActivity extends PreferenceActivity implements
 		OnPreferenceChangeListener {
@@ -33,8 +36,11 @@ public class SettingsActivity extends PreferenceActivity implements
 	PreferenceScreen psLocation;
 	PreferenceScreen manualNetwork;
 	PreferenceScreen clearCache;
+	PreferenceScreen c2dmTour;
 	CheckBoxPreference autoNetwork;
 	private Context context;
+	private Activity self;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +57,10 @@ public class SettingsActivity extends PreferenceActivity implements
 		manualNetwork = (PreferenceScreen) this.findPreference("citybikes.preferences_network");
 		
 		clearCache = (PreferenceScreen) this.findPreference("citybikes.preferences_cache_network");
+		c2dmTour = (PreferenceScreen) this.findPreference("citybikes.preferences_c2dm_tour");
 		
-		this.context = getApplicationContext();
-		
+		context = getApplicationContext();
+		self = this;
 		
 		psLocation.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
@@ -89,14 +96,34 @@ public class SettingsActivity extends PreferenceActivity implements
 			public boolean onPreferenceClick(Preference preference) {
 				SharedPreferences settings = getApplicationContext().getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
 				SharedPreferences.Editor editor = settings.edit();
-				editor.remove("network_url");
-				editor.remove("reload_network");
-				editor.remove("network_id");
-				editor.remove("last_updated");
-				editor.remove("stations");
-				editor.remove("networks");
+				// Save favs!!!
+				String favs = settings.getString("bookmarks", "{}");
+				editor.clear();
+				editor.putString("bookmarks", favs);
+				
+				//Force reload
 				editor.putBoolean("reload_network", true);
 				editor.commit();
+				CityBikes.showCustomToast(context,self , "Cache cleared :)", Toast.LENGTH_SHORT, Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+				return false;
+			}
+		});
+		
+		c2dmTour.setOnPreferenceClickListener(new OnPreferenceClickListener (){
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				if (CityBikes.isC2DMReady(context)){
+					SharedPreferences settings = getApplicationContext().getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
+					SharedPreferences.Editor editor = settings.edit();
+					// Save favs!!!
+					editor.putBoolean("first_time_c2dm", true);
+					//Force reload
+					editor.putBoolean("reload_network", true);
+					editor.commit();
+					CityBikes.showCustomToast(context,self , getText(R.string.preferences_c2dm_tour_toast_ok), Toast.LENGTH_LONG, Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+				}else{
+					CityBikes.showCustomToast(context,self , getText(R.string.preferences_c2dm_tour_toast_ko), Toast.LENGTH_LONG, Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+				}
 				return false;
 			}
 		});

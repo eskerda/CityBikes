@@ -150,6 +150,16 @@ public class StationsDBAdapter implements Runnable {
 			stationsMemoryMap.add(memoryStation);
 		}
 	}
+	
+	public StationOverlay getStationFromAll( int id ){
+		Iterator<StationOverlay> i = stationsMemoryMap.iterator();
+		while(i.hasNext()){
+			StationOverlay st = i.next();
+			if (st.getStation().getId() == id)
+				return st;
+		}
+		return null;
+	}
 
 	public List<StationOverlay> getMemory() throws Exception {
 		return stationsMemoryMap;
