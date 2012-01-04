@@ -251,7 +251,7 @@ public class InfoLayer extends LinearLayout {
 			
 			if (this.onC2DMTour){
 				CityBikes.showCustomToast(ctx, this, ctx.getText(R.string.c2dm_tour_green_arrow), Toast.LENGTH_LONG, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-				this.showFlingTooltip(0);
+				this.showFlingTooltip(1);
 			}
 		}
 
