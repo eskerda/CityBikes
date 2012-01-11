@@ -37,7 +37,7 @@ public class CityBikes {
 		SharedPreferences settings = ctx.getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
 		String netnick = settings.getString("network_name", "error");
 		//For now it only works on SDK 2.2 and Barcelona Bicing!!!
-		boolean ready = SDK_INT >= 8 && netnick.compareTo("bicing") == 0;
+		boolean ready = SDK_INT >= 8 && (netnick.compareTo("velib") == 0 || netnick.compareTo("bicing") == 0);
 		Log.i("CityBikes","Is C2DM Ready: "+Boolean.toString(ready));
 		return ready;
 	}
@@ -79,5 +79,11 @@ public class CityBikes {
 		toast.setDuration(DURATION);
 		toast.setView(layout);
 		toast.show();
+	}
+	
+	public static final String getNetNick(Context ctx){
+		SharedPreferences settings = ctx.getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
+		String netnick = settings.getString("network_name", "error");
+		return netnick;
 	}
 }

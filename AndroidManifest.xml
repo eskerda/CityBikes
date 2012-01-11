@@ -10,7 +10,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="net.homelinux.penecoptero.android.citybikes.app"
-	android:versionName="1.4.4 Pushie" android:versionCode="11">
+	android:versionName="1.4.5 le Pushie" android:versionCode="12">
 	
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

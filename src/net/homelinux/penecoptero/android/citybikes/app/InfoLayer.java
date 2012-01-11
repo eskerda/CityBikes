@@ -224,11 +224,13 @@ public class InfoLayer extends LinearLayout {
 								Secure.ANDROID_ID);
 						Map<String, String> data = new HashMap<String, String>();
 						data.put("devId", deviceId);
+						String netnick = CityBikes.getNetNick(ctx);
+						data.put("netnick", netnick);
 						data.put("station_id",Integer.toString(station.getStation().getId()));
 						data.put("action","callStation");
 						try{
 							Log.i("C2DM","Sending station to laika");
-							rHelper.restPOST("http://laika.citybik.es:8181",data);
+							rHelper.restPOST("http://laika.citybik.es:8282",data);
 							CityBikes.showCustomToast(ctx, self , ctx.getText(R.string.c2dm_added), Toast.LENGTH_LONG, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
 						}catch (Exception e){
 							Log.i("C2DM","Error sending station to laika");

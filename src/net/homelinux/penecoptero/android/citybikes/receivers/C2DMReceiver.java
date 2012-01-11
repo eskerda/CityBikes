@@ -43,7 +43,7 @@ public class C2DMReceiver extends BroadcastReceiver {
 			data.put("devId", deviceId);
 			data.put("action","register");
 			try{
-				String response = rHelper.restPOST("http://laika.citybik.es:8181", data);
+				String response = rHelper.restPOST("http://laika.citybik.es:8282", data);
 				Log.d("C2DM", "Response from laika: "+response);
 			}catch (Exception e){
 				Log.d("C2DM","Error posting to laika");
