@@ -29,14 +29,11 @@
     <string name="preferences_location">My Location</string>
     <string name="preferences_location_title">Select a Location Provider</string>
     <string name="preferences_location_summary">Click to change your location providers (Network and GPS)</string>
-    
-    
-    
-<string name="preferences_cache_network_summary">Restart the app state as it was just installed (keeps the favorites)</string>
+	<string name="preferences_cache_network_summary">Restart the app state as it was just installed (keeps the favorites)</string>
     <string name="preferences_autofind_network_title">Automatic network selection</string>
     <string name="preferences_autofind_network_summary">Allow automatic network selection based on your current location</string>
     <string name="preferences_cache_network_title">Clear cache</string>
-<string name="bike_network_alert_title">Bike network selection</string>
+	<string name="bike_network_alert_title">Bike network selection</string>
     <string name="preferences_network">Bike Network</string>
     <string name="try_again">Try Again</string>
     <string name="bike_network_alert_success_title">Network found</string>

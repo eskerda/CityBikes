@@ -15,7 +15,7 @@
 * limitations under the License.
 */ -->
 <resources>
-    <string name="app_name">CityBikes</string>
+    <string name="app_name">openVelib</string>
     <string name="menu_sync">Synchronisieren</string>
     <string name="menu_location">Mein Standort</string>
     <string name="menu_view_all">Alle anzeigen</string>

@@ -151,6 +151,16 @@ public class StationsDBAdapter implements Runnable {
 			stationsMemoryMap.add(memoryStation);
 		}
 	}
+	
+	public StationOverlay getStationFromAll( int id ){
+		Iterator<StationOverlay> i = stationsMemoryMap.iterator();
+		while(i.hasNext()){
+			StationOverlay st = i.next();
+			if (st.getStation().getId() == id)
+				return st;
+		}
+		return null;
+	}
 
 	public List<StationOverlay> getMemory() throws Exception {
 		return stationsMemoryMap;
@@ -274,7 +284,6 @@ public class StationsDBAdapter implements Runnable {
 		RAWstations = settings.getString("stations", "[]");
 		last_updated = settings.getString("last_updated", null);
 		last_updated_time = settings.getLong("last_updated_time", 0);
-		String network_url = settings.getString("network_url", "");
 	}
 
 	public void sync(boolean all, Bundle data) throws Exception {

@@ -1,7 +1,6 @@
 package net.homelinux.penecoptero.android.openvelib.app;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 

@@ -16,8 +16,6 @@
 
 package net.homelinux.penecoptero.android.openvelib.utils;
 
-import android.util.Log;
-
 import com.google.android.maps.GeoPoint;
 
 public class CircleHelper {

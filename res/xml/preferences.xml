@@ -24,4 +24,12 @@
             android:summary="@string/preferences_location_summary">
         	</PreferenceScreen>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/help">
+            <PreferenceScreen
+            android:key="openvelib.preferences_c2dm_tour"
+            android:title="@string/preferences_c2dm_tour_title"
+            android:summary="@string/preferences_c2dm_tour_summary">
+        	</PreferenceScreen>
+    </PreferenceCategory>
 </PreferenceScreen>

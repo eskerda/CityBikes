@@ -29,14 +29,11 @@
     <string name="preferences_location">Localización</string>
     <string name="preferences_location_title">Método de localización</string>
     <string name="preferences_location_summary">Activa o desactiva la localitzación por Red o GPS</string>
-    
-    
-    
-<string name="preferences_cache_network_summary">Deja la aplicación como si estubiese recién instalada (mantiene los favoritos)</string>
+	<string name="preferences_cache_network_summary">Deja la aplicación como si estubiese recién instalada (mantiene los favoritos)</string>
     <string name="preferences_autofind_network_title">Selección automática de red</string>
     <string name="preferences_autofind_network_summary">Permitir autodetectar la red dependiendo de tu localización</string>
     <string name="preferences_cache_network_title">Limpiar caché</string>
-<string name="bike_network_alert_title">Selección de red de bicicletas</string>
+	<string name="bike_network_alert_title">Selección de red de bicicletas</string>
     <string name="preferences_network">Red de Bicicletas</string>
     <string name="try_again">Otra vez</string>
     <string name="bike_network_alert_success_title">Red encontrada</string>
@@ -47,11 +44,26 @@
     <string name="sure">Sí</string>
     <string name="preferences_network_summary">Escoge manualmente de una lista de redes</string>
     <string name="preferences_network_title">Selecciona una red de bicicletas</string>
-    <string name="automatic">Automàgico</string>
+    <string name="automatic">Automágico</string>
     <string name="manual">Manual</string>
     <string name="bike_network_alert_error_text">Vuelve a probarlo, o selecciona una red manualmente del listado</string>
 	<string name="get_bike_mode">Encuentra una bicicleta</string>
 	<string name="park_bike_mode">Deja una bicicleta</string>
-	    <string name="fling_tooltip">Arrastra el dedo por la flecha verde para mostrar el menú de favoritos</string>
-	
+	<string name="fling_tooltip">Arrastra el dedo por la flecha verde para mostrar el menú de favoritos</string>
+	<string name="c2dm_new_feature">En ésta versión hay un nuevo feature que me gustaria que vieras. \nConsiste en recibir una notificación cuando hay bicicletas disponibles en una estación que estaba vacía.\n\nEn ocasiones ésta aplicación no es fácil de usar, así que he preparado un tour especialmente para la ocasión. En todo caso, puedes acceder a él en cualquier momento desde el menú de preferencias.\n\nBien, quieres ver el tour?</string>
+    <string name="c2dm_new_feature_idea">Si habias seleccionado una estación que ya tenia bicicletas, probablemente ya hayas recibido la notificación!\n\nImagina que no te importa esperar a que lleguen bicicletas en ésta estación, quizás estés en la terraza de un bar, charlando con un amigo, o esperando desde la oficina. Con ésta opcion, no tendrás que estar continuamente actualizando el estado de la estación en concreto. Simplemente, deja que Open Bicing te lo notifique a través de Google C2DM, aún estando la aplicación cerrada!\n\nÉste feature es EXPERIMENTAL.\n\nSi quieres dar tu opinión o feedback, puedes hacerlo por correo electrónico, o a través de twitter @ctbikes.\n\nGracias por hacer el tour, pásalo bien!</string>
+    <string name="new_feature">Hay un nuevo feature!</string>
+    <string name="about_this_feature">Acerca del feature</string>
+    <string name="nope">Ahora no</string>
+    <string name="c2dm_tour_doing_great">Genial! Aprieta el icono de alarma, al lado de la estrella</string>
+    <string name="c2dm_tour_start">Primero selecciona una estación. Para hacer una prueba rápida, selecciona cualquier estación en la que haya bicicletas disponibles</string>
+    <string name="c2dm_tour_green_arrow">Ahora muestra el menu contextual arrastrando el dedo por la flecha verde en cualquier dirección.</string>
+    <string name="preferences_c2dm_tour_title">Tour openVelib Notificaciones</string>
+    <string name="preferences_c2dm_tour_summary">Mostrar el tour de Notificaciones la próxima vez que uses la aplicación</string>
+    <string name="preferences_c2dm_tour_toast_ok">El tour de ayuda se mostrará la próxima vez que utilices la aplicación</string>
+    <string name="preferences_c2dm_tour_toast_ko">CityBikes todavía no soporta notificaciones C2DM en tu ciudad... de momento!</string>
+    <string name="preferences_tour_title">CityBikes Help Tour</string>
+    <string name="preferences_tour_summary">Show CityBikes Help Tour the next time you use the app</string>
+    <string name="help">Ayuda</string>
+    <string name="c2dm_added">Serás notificado cuando haya bicicletas libres en ésta estación.</string>
 </resources>

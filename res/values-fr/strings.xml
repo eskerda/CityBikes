@@ -15,7 +15,7 @@
  * limitations under the License.
  */ -->
 <resources>
-    <string name="app_name">openVelib</string>
+    <string name="app_name">Open Velib</string>
     <string name="menu_sync">Sync</string>
     <string name="menu_location">Ma position</string>
     <string name="menu_view_all">Tout voir</string>
@@ -29,9 +29,6 @@
     <string name="preferences_location">Ma position</string>
     <string name="preferences_location_title">Selectionner un fournisseur de localisation</string>
     <string name="preferences_location_summary">Cliquer pour changer les fournisseurs de localisation (réseau et GPS)</string>
-    
-    
-    
 	<string name="preferences_cache_network_summary">Restaure l\'état de l\'application comme si elle venait d\'être installée (conserve les favorits)</string>
     <string name="preferences_autofind_network_title">Sélection automatique du réseau</string>
     <string name="preferences_autofind_network_summary">Autoriser la sélection automatique du réseau en fonction de votre position</string>
@@ -50,6 +47,5 @@
     <string name="automatic">Automatique</string>
     <string name="manual">Manuel</string>
     <string name="bike_network_alert_error_text">Ré-essayez ou sélectionnez manuellement depuis une liste</string>
-        <string name="fling_tooltip">Slide through the green arrow to reveal the bookmarks menu</string>
-    
+    <string name="fling_tooltip">Slide through the green arrow to reveal the bookmarks menu</string>
 </resources>

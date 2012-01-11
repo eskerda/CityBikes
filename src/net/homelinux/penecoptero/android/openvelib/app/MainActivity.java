@@ -20,9 +20,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import net.homelinux.penecoptero.android.openvelib.utils.CircleHelper;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +34,7 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -83,23 +87,42 @@ public class MainActivity extends MapActivity {
 	
 	private Locator locator;
 	
+	private boolean onC2DMTourMode = false;
+	
+	private int selected_id = -1;
+	
+	
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if (savedInstanceState == null){
+			selected_id = -1;
+		} else {
+			selected_id = savedInstanceState.getInt("c2dm_station_id");
+		}
+		
+		if (selected_id == -1){
+			selected_id = getIntent().getIntExtra("c2dm_station_id", -1);
+		}
+		
+		Log.i("CityBikes","I should be centering station "+Integer.toString(selected_id));
+		
+		
+		
 		setContentView(R.layout.main);
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		mapView = (MapView) findViewById(R.id.mapview);
 		mSlidingDrawer = (StationSlidingDrawer) findViewById(R.id.drawer);
 		infoLayer = (InfoLayer) findViewById(R.id.info_layer);
 		scale = getResources().getDisplayMetrics().density;
-		//Log.i("CityBikes","ON CREATEEEEEEEEE!!!!!");
 		infoLayerPopulator = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 				if (msg.what == InfoLayer.POPULATE) {
 					infoLayer.inflateStation(stations.getCurrent());
-					
 				}
 				if (msg.what == OpenVelib.BOOKMARK_CHANGE){
 					int id = msg.arg1;
@@ -180,6 +203,7 @@ public class MainActivity extends MapActivity {
 			@Override
 			public void handleMessage(Message msg) {
 				if (msg.what == HomeOverlay.MOTION_CIRCLE_STOP){
+					Log.i("CityBikes","MOTION CIRCLE STOP");
 					try {
 						if (!view_all) {
 							view_near();
@@ -196,12 +220,10 @@ public class MainActivity extends MapActivity {
 		stations = new StationOverlayList(mapOverlays, new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				//Log.i("CityBikes","Message: "+Integer.toString(msg.what)+" "+Integer.toString(msg.arg1));
 				if (msg.what == StationOverlay.TOUCHED && msg.arg1 != -1) {
 					// One station has been touched
 					stations.setCurrent(msg.arg1, getBike);
 					infoLayer.inflateStation(stations.getCurrent());
-					//Log.i("CityBikes","Station touched: "+Integer.toString(msg.arg1));
 				}
 			}
 		});
@@ -219,6 +241,9 @@ public class MainActivity extends MapActivity {
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putBoolean("reload_network", false);
 					editor.commit();
+					if (selected_id != -1){
+						selectStation(selected_id, false);
+					}
 					StationOverlay current = stations.getCurrent();
 					if (current == null) {
 						infoLayer
@@ -235,13 +260,12 @@ public class MainActivity extends MapActivity {
 						
 					}
 					mapView.invalidate();
+					tourC2DM();
 					break;
 				case StationsDBAdapter.UPDATE_DATABASE:
-					
-					////Log.i("openBicing", "Database updated");
+				
 					break;
 				case StationsDBAdapter.NETWORK_ERROR:
-					////Log.i("openBicing", "Network error, last update from " + mDbHelper.getLastUpdated());
 					Toast toast = Toast.makeText(getApplicationContext(),
 							getString(R.string.network_error)
 									+ " " + mDbHelper.getLastUpdated(),
@@ -296,7 +320,12 @@ public class MainActivity extends MapActivity {
 					toast.show();
 					Calendar cal = Calendar.getInstance();
 					long now = cal.getTime().getTime();
-					if (Math.abs(now - mDbHelper.getLastUpdatedTime()) > 60000 * 5)
+					
+					if (selected_id != -1){
+						selectStation(selected_id, true);
+					}
+					
+					if (selected_id != -1 || Math.abs(now - mDbHelper.getLastUpdatedTime()) > 60000 * 5)
 						this.fillData(view_all);
 				}
 			}
@@ -309,6 +338,29 @@ public class MainActivity extends MapActivity {
 			view_all();
 		else
 			view_near();
+		
+	}
+	
+	private void showC2DMTour(){
+		this.onC2DMTourMode = true;
+		//Toast toastie = Toast.makeText(this,,Toast.LENGTH_LONG);
+		//toastie.show();
+		OpenVelib.showCustomToast(this.getApplicationContext(), this, getText(R.string.c2dm_tour_start), Toast.LENGTH_LONG, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+		infoLayer.setOnC2DMTour(true);
+		
+	}
+	
+	private boolean isFirstTimeC2DM(){
+		SharedPreferences settings = getApplicationContext().getSharedPreferences(OpenVelib.PREFERENCES_NAME,0);
+		boolean firstTime = settings.getBoolean("first_time_c2dm", true);
+		return firstTime;
+	}
+	private void saveFirstTimeC2DM(){
+		SharedPreferences settings = getApplicationContext().getSharedPreferences(OpenVelib.PREFERENCES_NAME,0);
+		Editor editor = settings.edit();
+		editor.putBoolean("first_time_c2dm", false);
+		editor.commit();
+
 	}
 	
 	protected void applyMapViewLongPressListener(MapView mapView) {
@@ -343,13 +395,20 @@ public class MainActivity extends MapActivity {
 		}
 
 	private void fillData(boolean all) {
+
+			try{
+				selected_id = stations.getCurrent().getStation().getId();
+			} catch (Exception e){
+				
+			}
+
 			Bundle data = new Bundle();
 			if (!all) {
 				GeoPoint center = locator.getCurrentGeoPoint();
 				if (center == null){
-						// Paris lat/lng 48.857, 2.353
-						double lat = 48.857;
-						double lng = 2.353;
+						// Paris lat/lng 48.8566, 2.352
+						double lat = 48.8566;
+						double lng = 2.352;
 						Location fallback = new Location("fallback");
 						fallback.setLatitude(lat);
 						fallback.setLongitude(lng);
@@ -382,13 +441,14 @@ public class MainActivity extends MapActivity {
 		this.populateList(this.view_all);
 		infoLayer.update();
 		mapView.invalidate();
-		Toast toast;
+		String text;
+		
 		if (getBike){
-			toast = Toast.makeText(getApplicationContext(),getString(R.string.get_bike_mode),Toast.LENGTH_SHORT);
+			text = getString(R.string.get_bike_mode);
 		} else {
-			toast = Toast.makeText(getApplicationContext(),getString(R.string.park_bike_mode),Toast.LENGTH_SHORT);
+			text = getString(R.string.park_bike_mode);
 		}
-		toast.show();
+		OpenVelib.showCustomToast(this.getApplicationContext(), this, text, Toast.LENGTH_SHORT);
 	}
 
 	@Override
@@ -427,9 +487,40 @@ public class MainActivity extends MapActivity {
 			mapView.getController().setZoom(zoom);
 		}
 	}
+	
+	public void selectStation(int id, boolean should_find){
+		Log.i("CityBikes","Selecting a station automatically! "+Integer.toString(id));
+		StationOverlay station = stations.getById(id);
+		
+		if (station != null){
+				Log.i("CityBikes","Found the station: "+station.getStation().getName());
+				stations.setCurrent(station.getStation().getId(), getBike);
+				Message tmp = new Message();
+				tmp.what = InfoLayer.POPULATE;
+				tmp.arg1 = station.getStation().getId();
+				infoLayerPopulator.dispatchMessage(tmp);
+				
+		} else if (should_find) {
+			
+				// Check if we are in view near mode (then, we should
+				// make the radius bigger, or just put the app in
+				// view all mode to center it. If we are already in
+				// view all mode, just report the error, or fuck it
+				station = mDbHelper.getStationFromAll(id);
+				if (station == null)
+					Log.i("CityBikes","I don't know about this station, fuck you");
+				else{
+					Log.i("CityBikes","Station is not on radius, trying a guess..");
+					Log.i("CityBikes","It might be at.. "+Integer.toString((int) station.getStation().getMetersDistance())+" m");
+					hOverlay.setRadius((int) station.getStation().getMetersDistance()+500);
+					selectStation(id, false);
+				}
+		}
+	}
 
 	public void view_all() {
 		try {
+			Log.i("CityBikes","Viewing all");
 			mDbHelper.populateStations();
 			populateList(true);
 		} catch (Exception e) {
@@ -439,8 +530,10 @@ public class MainActivity extends MapActivity {
 
 	public void view_near() {
 		try {
+			Log.i("CityBikes","Viewing near");
 			mDbHelper.populateStations(locator.getCurrentGeoPoint(), hOverlay.getRadius());
 			populateList(false);
+			
 			if (!infoLayer.isPopulated()) {
 				StationOverlay current = stations.getCurrent();
 				if (current != null) {
@@ -455,6 +548,32 @@ public class MainActivity extends MapActivity {
 		};
 	}
 
+	public void tourC2DM(){
+		Log.i("CityBikes","Starting new feature showroom!");
+		if (OpenVelib.isC2DMReady(this) && isFirstTimeC2DM()){
+			saveFirstTimeC2DM();
+			AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+			alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+			alertDialog.setTitle(this.getString(R.string.new_feature));
+			alertDialog.setMessage(this.getString(R.string.c2dm_new_feature));
+			alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,this.getString(R.string.sure), new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					showC2DMTour();
+				}
+			});
+			
+			alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,this.getString(R.string.nope), new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Log.i("C2DM","Dismissing this shit!");
+				}
+			});
+			
+			alertDialog.show();
+
+		}
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -492,6 +611,7 @@ public class MainActivity extends MapActivity {
 	protected void onResume() {
 		super.onResume();
 		////Log.i("openBicing", "RESUME!");
+		
 	}
 
 	@Override
@@ -505,20 +625,16 @@ public class MainActivity extends MapActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		////Log.i("openBicing", "PAUSE!");
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		////Log.i("openBicing", "DESTROY!");
-
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		////Log.i("openBicing", "STOP!");
 		locator.stopUpdates();
 		if (this.isFinishing())
 			this.finish();
@@ -527,7 +643,6 @@ public class MainActivity extends MapActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		//Log.i("CityBikes", "Activity Result");
 		if (requestCode == SETTINGS_ACTIVITY) {
 			if (resultCode == RESULT_OK) {
 				locator.restartUpdates();

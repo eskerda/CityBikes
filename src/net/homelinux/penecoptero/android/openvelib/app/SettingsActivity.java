@@ -16,20 +16,28 @@
 
 package net.homelinux.penecoptero.android.openvelib.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.view.Gravity;
+import android.widget.Toast;
 
 public class SettingsActivity extends PreferenceActivity implements
 		OnPreferenceChangeListener {
 
 	PreferenceScreen psLocation;
+	PreferenceScreen c2dmTour;
 	private Context context;
+	private Activity self;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +47,12 @@ public class SettingsActivity extends PreferenceActivity implements
 				OpenVelib.PREFERENCES_NAME);
 		addPreferencesFromResource(R.xml.preferences);
 
-		psLocation = (PreferenceScreen) this.findPreference("openvelib.preferences_location");		
-				
-		this.context = getApplicationContext();
+		psLocation = (PreferenceScreen) this.findPreference("openvelib.preferences_location");
 		
+		c2dmTour = (PreferenceScreen) this.findPreference("openvelib.preferences_c2dm_tour");
+		
+		context = getApplicationContext();
+		self = this;
 		
 		psLocation.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
@@ -53,6 +63,25 @@ public class SettingsActivity extends PreferenceActivity implements
 						return false;
 					}
 				});
+		
+		c2dmTour.setOnPreferenceClickListener(new OnPreferenceClickListener (){
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				if (OpenVelib.isC2DMReady(context)){
+					SharedPreferences settings = getApplicationContext().getSharedPreferences(OpenVelib.PREFERENCES_NAME,0);
+					SharedPreferences.Editor editor = settings.edit();
+					// Save favs!!!
+					editor.putBoolean("first_time_c2dm", true);
+					//Force reload
+					editor.putBoolean("reload_network", true);
+					editor.commit();
+					OpenVelib.showCustomToast(context,self , getText(R.string.preferences_c2dm_tour_toast_ok), Toast.LENGTH_LONG, Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+				}else{
+					OpenVelib.showCustomToast(context,self , getText(R.string.preferences_c2dm_tour_toast_ko), Toast.LENGTH_LONG, Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+				}
+				return false;
+			}
+		});
 	}
 	
 	private void launchLocationSettings() {
