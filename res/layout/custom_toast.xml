@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/custom_toast_layout_root"
+              android:orientation="horizontal"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:padding="10dp"
+              android:background="@drawable/toast_border"
+              
+              >
+    <ImageView android:id="@+id/custom_toast_image"
+               android:layout_width="wrap_content"
+               android:layout_height="fill_parent"
+               android:layout_marginRight="10dp"
+               android:src="@drawable/icon"
+               />
+    <TextView android:id="@+id/custom_toast_text"
+              android:layout_width="wrap_content"
+              android:layout_height="fill_parent"
+              android:textColor="#FFF"
+              android:textSize="18dip"
+              android:text="This is just dummy content, disregard.
+              
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vel tortor nisi. Nam dictum diam sed sapien placerat nec tempus diam malesuada. "
+              />
+</LinearLayout>

@@ -16,17 +16,23 @@
 
 package net.homelinux.penecoptero.android.openbicing.app;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.homelinux.penecoptero.android.openbicing.view.FlingTooltip;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.content.Intent;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings.Secure;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,6 +41,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +69,7 @@ public class InfoLayer extends LinearLayout {
 	
 	private FlingTooltip flingTooltip;
 	private Handler handler;
-	private Drawable oldBackground;
+	private View self;
 	private ViewFlipper vf;
 
 	private LayoutInflater inflater;
@@ -76,10 +83,13 @@ public class InfoLayer extends LinearLayout {
 	public static final int POPULATE = 202;
 	
 	private ToggleButton bookmarkButton;
-
+	private Button alarmButton;
+	private Button unalarmButton;
 	private boolean populated = false;
-	
+	private RESTHelper rHelper;
 	private int lastDisplayedChild = -1;
+	
+	private boolean onC2DMTour = false;
 
 
 	public InfoLayer(Context context, AttributeSet attrs) {
@@ -88,6 +98,9 @@ public class InfoLayer extends LinearLayout {
 		this.init();
 	}
 
+	public void setOnC2DMTour(boolean mode){
+		onC2DMTour = mode;
+	}
 	public InfoLayer(Context context) {
 		super(context);
 		this.ctx = context;
@@ -96,28 +109,6 @@ public class InfoLayer extends LinearLayout {
 
 	public void setHandler(Handler handler) {
 		this.handler = handler;
-	}
-	
-	private void checkFirstTime(){
-		if (isFirstTime()){
-			if (vf!=null && flingTooltip != null){
-				flingTooltip.setVisibility(View.VISIBLE);
-				Toast toast = Toast.makeText(ctx,ctx.getString(R.string.fling_tooltip),Toast.LENGTH_LONG);
-				toast.show();
-			}
-		}
-	}
-	private boolean isFirstTime(){
-		SharedPreferences settings = ctx.getSharedPreferences(OpenBicing.PREFERENCES_NAME,0);
-		boolean firstTime = settings.getBoolean("first_time", true);
-		return firstTime;
-	}
-
-	private void saveFirstTime(){
-		SharedPreferences settings = ctx.getSharedPreferences(OpenBicing.PREFERENCES_NAME,0);
-		Editor editor = settings.edit();
-		editor.putBoolean("first_time", false);
-		editor.commit();
 	}
 
 	private void init() {
@@ -137,7 +128,8 @@ public class InfoLayer extends LinearLayout {
 		red = R.drawable.alpha_red_gradient;
 		inflater = (LayoutInflater) ctx
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
+		rHelper = new RESTHelper(false, "foo","bar");
+		self = this;
 	}
 
 	public void inflateStation(StationOverlay tmp) {
@@ -178,8 +170,17 @@ public class InfoLayer extends LinearLayout {
 			populated = true;
 			vf = (ViewFlipper) findViewById(R.id.stationViewFlipper);
 			bookmarkButton = (ToggleButton) findViewById(R.id.bookmark_station);
+			alarmButton = (Button) findViewById(R.id.alarm_station);
+			unalarmButton = (Button) findViewById(R.id.unalarm_station);
+			if (OpenBicing.isC2DMReady(ctx)){
+				unalarmButton.setVisibility(INVISIBLE);
+			}else{
+				alarmButton.setVisibility(INVISIBLE);
+				unalarmButton.setVisibility(INVISIBLE);
+			}
 			flingTooltip = (FlingTooltip) findViewById(R.id.FlingTooltip);
 			flingTooltip.setVisibility(View.INVISIBLE);
+			
 			
 			if (bookmarkButton != null){
 				bookmarkButton.setChecked(station.getStation().isBookmarked());
@@ -200,8 +201,57 @@ public class InfoLayer extends LinearLayout {
 					}});			
 				
 			}
-			checkFirstTime();
 			
+			if (alarmButton != null){
+				alarmButton.setOnClickListener(new OnClickListener(){
+					public void onClick(View v){
+						if (onC2DMTour){
+							// Make alert!!!!
+							onC2DMTour = false;
+							AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+							alertDialog.setTitle(ctx.getString(R.string.about_this_feature));
+							alertDialog.setMessage(ctx.getString(R.string.c2dm_new_feature_idea));
+							alertDialog.show();
+						} else {
+							
+						}
+						Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
+						registrationIntent.putExtra("app", PendingIntent.getBroadcast(ctx, 0, new Intent(), 0)); // boilerplate
+						registrationIntent.putExtra("sender", "push@citybik.es");
+						ctx.startService(registrationIntent);
+						String deviceId = Secure.getString(ctx.getContentResolver(),
+								Secure.ANDROID_ID);
+						Map<String, String> data = new HashMap<String, String>();
+						data.put("devId", deviceId);
+						data.put("station_id",Integer.toString(station.getStation().getId()));
+						data.put("action","callStation");
+						try{
+							Log.i("C2DM","Sending station to laika");
+							rHelper.restPOST("http://laika.citybik.es:8181",data);
+							OpenBicing.showCustomToast(ctx, self , ctx.getText(R.string.c2dm_added), Toast.LENGTH_LONG, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+						}catch (Exception e){
+							Log.i("C2DM","Error sending station to laika");
+							Toast toastie = Toast.makeText(ctx,"Error connecting to Laika, try again!",Toast.LENGTH_SHORT);
+							toastie.show();
+						}
+					}
+				});
+			}
+			
+			if (unalarmButton != null){
+				unalarmButton.setOnClickListener(new OnClickListener(){
+					public void onClick(View v){
+						Intent unregIntent = new Intent("com.google.android.c2dm.intent.UNREGISTER");
+						unregIntent.putExtra("app", PendingIntent.getBroadcast(ctx, 0, new Intent(), 0));
+						ctx.startService(unregIntent);
+					}
+				});
+			}
+			
+			if (this.onC2DMTour){
+				OpenBicing.showCustomToast(ctx, this, ctx.getText(R.string.c2dm_tour_green_arrow), Toast.LENGTH_LONG, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+				this.showFlingTooltip(1);
+			}
 		}
 
 	}
@@ -309,9 +359,6 @@ public class InfoLayer extends LinearLayout {
 					break;
 			}
 			lastDisplayedChild = vf.getDisplayedChild();
-			if (isFirstTime()){
-				saveFirstTime();
-			}
 		}
 		
 		return true;
@@ -445,6 +492,9 @@ public class InfoLayer extends LinearLayout {
 					vf.setInAnimation(inFromLeftAnimation());
 					vf.setOutAnimation(outToRightAnimation());
 					vf.showPrevious();
+				}
+				if (onC2DMTour){
+					OpenBicing.showCustomToast(ctx, self , ctx.getText(R.string.c2dm_tour_doing_great), Toast.LENGTH_LONG, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
 				}
 			} catch (Exception e) {
 				// nothing

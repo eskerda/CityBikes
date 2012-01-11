@@ -1,9 +1,0 @@
-
-    <LinearLayout android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
-    		
-    
-    >
-        <RelativeLayout android:layout_height="fill_parent" android:id="@+id/relativeLayout1" android:layout_width="wrap_content">
-            <ToggleButton android:layout_alignParentLeft="true" android:id="@+id/bookmark_station" android:layout_height="48dip" android:background="@drawable/star" android:textOn="" android:textOff="" android:layout_marginLeft="10dip" android:layout_width="48dip"></ToggleButton>
-        </RelativeLayout>
-    </LinearLayout>

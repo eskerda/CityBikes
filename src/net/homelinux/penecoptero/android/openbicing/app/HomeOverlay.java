@@ -35,6 +35,7 @@ public class HomeOverlay extends Overlay {
 	public static final int MOTION_CIRCLE_STOP = 100;
 	private GeoPoint point;
 
+	
 	private float radiusInPixels;
 	private int radiusInMeters = 500;
 

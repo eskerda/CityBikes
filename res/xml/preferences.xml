@@ -19,9 +19,22 @@
     <PreferenceCategory
         android:title="@string/preferences_location">
             <PreferenceScreen
-            android:key="openvelib.preferences_location"
+            android:key="openbicing.preferences_location"
             android:title="@string/preferences_location_title"
             android:summary="@string/preferences_location_summary">
+        	</PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/help">
+        	<!-- <PreferenceScreen
+            android:key="citybikes.preferences_tour"
+            android:title="@string/preferences_tour_title"
+            android:summary="@string/preferences_tour_summary">
+        	</PreferenceScreen>-->
+            <PreferenceScreen
+            android:key="openbicing.preferences_c2dm_tour"
+            android:title="@string/preferences_c2dm_tour_title"
+            android:summary="@string/preferences_c2dm_tour_summary">
         	</PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>

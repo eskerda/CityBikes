@@ -16,22 +16,38 @@ http://www.apache.org/licenses/LICENSE-2.0
 * limitations under the License.
 */ -->
 <resources>
-<string name="app_name">Open Bicing</string>
-<string name="menu_sync">Sincronitza</string>
-<string name="menu_location">On sóc?</string>
-<string name="menu_view_all">Veure-ho tot</string>
-<string name="menu_settings">Preferències</string>
-<string name="menu_help">Ajuda</string>
-<string name="no_bikes_around">No hi ha cap estació a la vora. Prova a canviar la grandària de la zona mostrada utilitzant el control blau o activa \"Veure-ho tot\" al menú d\'opcions</string>
-<string name="bikes">bicis</string>
-<string name="free">espais</string>
-<string name="network_error">Error de connexió</string>
-<string name="loading">Descarregant bicicletes :D</string>
-<string name="preferences_location">On sóc?</string>
-<string name="preferences_location_title">Mètode de localització</string>
-<string name="preferences_location_summary">Activa o desactiva la localització per Xarxa o GPS</string>
-<string name="sure">Sí</string>
-<string name="get_bike_mode">Troba una bicicleta</string>
-<string name="park_bike_mode">Deixa una bicicleta</string>
-<string name="fling_tooltip">Fes lliscar el dit per la fletxa verda per mostrar el menú de favorits</string>
+	<string name="app_name">Open Bicing</string>
+	<string name="menu_sync">Sincronitza</string>
+	<string name="menu_location">On sóc?</string>
+	<string name="menu_view_all">Veure-ho tot</string>
+	<string name="menu_settings">Preferències</string>
+	<string name="menu_help">Ajuda</string>
+	<string name="no_bikes_around">No hi ha cap estació a la vora. Prova a canviar la grandària de la zona mostrada utilitzant el control blau o activa \"Veure-ho tot\" al menú d\'opcions</string>
+	<string name="bikes">bicis</string>
+	<string name="free">espais</string>
+	<string name="network_error">Error de connexió</string>
+	<string name="loading">Descarregant bicicletes :D</string>
+	<string name="preferences_location">On sóc?</string>
+	<string name="preferences_location_title">Mètode de localització</string>
+	<string name="preferences_location_summary">Activa o desactiva la localització per Xarxa o GPS</string>
+	<string name="sure">Sí</string>
+	<string name="get_bike_mode">Troba una bicicleta</string>
+	<string name="park_bike_mode">Deixa una bicicleta</string>
+	<string name="fling_tooltip">Fes lliscar el dit per la fletxa verda per mostrar el menú de favorits</string>
+	<string name="c2dm_new_feature">En aquesta versió hi ha un nou feature que m\'agradaria ensenyar-te..\nConsisteix en rebre notificacions quan una estació buida té una bicicleta disponible\nSovint aquesta aplicació no es senzilla d\'utilitzar, així que he preparat un tour. En tot cas, pots accedir altre cop al tour des del menú de preferències.\n\nBé, t\'agradaria veure el tour?</string>
+    <string name="c2dm_new_feature_idea">Si havies seleccionat una estació que ja tenia bicicletes, segurament ja hauràs rebut una notificació!\n\nImagina que no t\'importa esperar que arribin bicicletes a una estació, potser estàs a la terrassa d\'un bar, parlant amb un amic, o esperant des de l\'oficina. Amb aquesta opció, no hauràs d\'estar continuament mirant l\'estat de la estació en qüestió. Només caldrà que esperis a que Open Bicing t\'ho notifiqui a través del servei C2DM de Google, encara que aquesta estigui tancada!\n\nAquest feature es EXPERIMENTAL.\n\nSi vols donar la teva opinió o feedback, contacta\'m a través de correu electrónic o a twitter @ctbikes.\n\nGràcies per fer el tour, i passa-ho bé!</string>
+    <string name="new_feature">Hi ha un nou feature!</string>
+    <string name="about_this_feature">Sobre el feature</string>
+    <string name="nope">Ara no</string>
+    <string name="c2dm_tour_doing_great">Genial! Apreta l\'icona de alarma, al costat de l\'estrella</string>
+    <string name="c2dm_tour_start">Primer selecciona una estació. Per a fer la prova ràpid, selecciona qualsevol estació amb bicicletes disponibles.</string>
+    <string name="c2dm_tour_green_arrow">Ara, mostra el menu contextual fent lliscar el dit per la fletxa verda en qualsevol direcció</string>
+    <string name="preferences_c2dm_tour_title">Tour Open Bicing Notificacions</string>
+    <string name="preferences_c2dm_tour_summary">Mostrar el tour de Notificacions la propera vegada que utilitzis l\'aplicació</string>
+    <string name="preferences_c2dm_tour_toast_ok">El tour d\'ajuda serà mostrat la propera vegada que utilitzis l\'aplicació</string>
+    <string name="preferences_c2dm_tour_toast_ko">Open Bicing encara no suporta notificacions C2DM a la teva ciutat... de moment!</string>
+    <string name="preferences_tour_title">CityBikes Help Tour</string>
+    <string name="preferences_tour_summary">Show CityBikes Help Tour the next time you use the app</string>
+    <string name="help">Ajuda</string>
+    <string name="c2dm_added">Seràs notificat quan hi hagi bicicletes lliures en aquesta estació!</string>
 </resources>
