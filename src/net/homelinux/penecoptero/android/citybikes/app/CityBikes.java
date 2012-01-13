@@ -35,9 +35,9 @@ public class CityBikes {
 		int SDK_INT = android.os.Build.VERSION.SDK_INT;
 		Log.i("CityBikes","SDK Version is "+Integer.toString(SDK_INT));
 		SharedPreferences settings = ctx.getSharedPreferences(CityBikes.PREFERENCES_NAME,0);
-		String netnick = settings.getString("network_name", "error");
-		//For now it only works on SDK 2.2 and Barcelona Bicing!!!
-		boolean ready = SDK_INT >= 8 && (netnick.compareTo("velib") == 0 || netnick.compareTo("bicing") == 0);
+		//For now it only works on SDK 2.2 !!!
+		
+		boolean ready = SDK_INT >= 8;
 		Log.i("CityBikes","Is C2DM Ready: "+Boolean.toString(ready));
 		return ready;
 	}
