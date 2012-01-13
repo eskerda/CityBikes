@@ -8,7 +8,7 @@
 	KIND, either express or implied. * See the License for the specific language 
 	governing permissions and * limitations under the License. */ -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="net.homelinux.penecoptero.android.openbicing.app" android:versionName="1.7.1 Pushie" android:versionCode="13">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="net.homelinux.penecoptero.android.openbicing.app" android:versionName="1.7.2 le Pushie" android:versionCode="14">
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
     	<uses-library android:name="com.google.android.maps" />
 			<activity android:name=".MainActivity" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">

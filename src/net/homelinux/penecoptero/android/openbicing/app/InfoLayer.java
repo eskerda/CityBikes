@@ -225,9 +225,10 @@ public class InfoLayer extends LinearLayout {
 						data.put("devId", deviceId);
 						data.put("station_id",Integer.toString(station.getStation().getId()));
 						data.put("action","callStation");
+						data.put("netnick","bicing");
 						try{
 							Log.i("C2DM","Sending station to laika");
-							rHelper.restPOST("http://laika.citybik.es:8181",data);
+							rHelper.restPOST("http://laika.citybik.es:8282",data);
 							OpenBicing.showCustomToast(ctx, self , ctx.getText(R.string.c2dm_added), Toast.LENGTH_LONG, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
 						}catch (Exception e){
 							Log.i("C2DM","Error sending station to laika");
